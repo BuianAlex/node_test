@@ -1,0 +1,92 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font: 13px Helvetica, Arial;
+  position: relative;
+}
+#send-message {
+  background: #000;
+  padding: 3px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+#send-message input {
+  border: 0;
+  padding: 10px;
+  width: 90%;
+  margin-right: 0.5%;
+}
+#send-message button {
+  width: 9%;
+  background: rgb(130, 224, 255);
+  border: none;
+  padding: 10px;
+}
+#chat {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 50px;
+}
+#chat li {
+  padding: 5px 10px;
+  margin-left: 100px;
+}
+#chat li:nth-child(odd) {
+  background: #eee;
+}
+.modal-bg {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+}
+.modal-content {
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 1rem 3rem 1rem;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  max-height: 90%;
+  background-color: #fff;
+}
+.aside-left {
+  position: absolute;
+  width: 100px;
+  left: 0;
+  top: 68px;
+  height: calc(100vh - 110px);
+  padding: 0 0.5rem;
+  background-color: #fff;
+  overflow: hidden;
+}
+.user-name {
+  position: relative;
+  padding-left: 5px;
+  overflow: hidden;
+}
+.user-name span {
+  overflow: hidden;
+}
+.user-name::before {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+  content: '';
+  width: 5px;
+  height: 5px;
+  background-color: green;
+  border-radius: 50%;
+}
+.mui-checkbox input {
+  display: block;
+}

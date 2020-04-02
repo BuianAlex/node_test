@@ -1,0 +1,140 @@
+.header-text {
+  text-align: center;
+}
+.new-img-block {
+  display: flex;
+}
+#img-form {
+  overflow: hidden;
+}
+.img-big {
+  width: 240px;
+  height: 240px;
+  background-color: #fff;
+  margin-right: 1rem;
+  text-align: center;
+  overflow: hidden;
+}
+.img-big img {
+  width: auto;
+  height: auto;
+  max-height: 240px;
+}
+.img-list {
+  display: flex;
+  justify-content: left;
+  flex-wrap: wrap;
+}
+.img-list li {
+  position: relative;
+  width: 100px;
+  height: 80px;
+  background-color: #fff;
+  margin: 0.5rem;
+}
+.img-list li .add-btn {
+  position: absolute;
+  display: block;
+  color: #fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -70%);
+  background-color: #2196f3;
+  border: none;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+}
+.with-photo {
+  cursor: pointer;
+}
+.with-photo:hover .img-delete {
+  display: block;
+}
+.with-photo:hover::after {
+  display: block;
+}
+.img-delete {
+  display: none;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  color: #fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background-color: #f32121;
+  border: none;
+  border-radius: 50%;
+  font-weight: 800;
+  outline: none;
+  cursor: pointer;
+}
+.with-photo::before {
+  display: none;
+  position: absolute;
+  width: 20px;
+  text-align: center;
+  content: 'X';
+  color: #fff;
+  top: 50%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  background-color: #f32121;
+  border: none;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+}
+/* .with-photo::after {
+  display: none;
+  position: absolute;
+  width: 20px;
+  text-align: center;
+  content: 'U';
+  color: #fff;
+  top: -10%;
+  right: -10%;
+  background-color: #2196f3;
+  border: none;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+} */
+.photo-upload {
+  overflow: hidden;
+}
+.photo-upload label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  width: 20px;
+  text-align: center;
+  border-radius: 50%;
+  background-color: #2196f3;
+  color: #fff;
+  font-weight: 800;
+}
+.photo-upload input {
+  line-height: 100px;
+  position: absolute;
+  top: 0;
+  opacity: 0;
+}
+.width-two {
+  display: flex;
+}
+.width-two .mui-textfield:nth-child(1) {
+  margin-right: 0.5rem;
+}
+.with-photo {
+  text-align: center;
+  overflow: hidden;
+}
+.with-photo img {
+  width: auto;
+  height: 100%;
+}

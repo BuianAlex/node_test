@@ -1,0 +1,59 @@
+html
+head
+  link(href="//cdn.muicss.com/mui-0.10.1/css/mui.min.css" rel="stylesheet" type="text/css")
+  link(href="./../../css/main.css" rel="stylesheet" type="text/css")
+  link(href="./../../css/photo.css" rel="stylesheet" type="text/css")
+  script(src="/socket.io/socket.io.js")
+  script(src="//cdn.muicss.com/mui-0.10.1/js/mui.min.js")
+  title File storage
+body
+  div(class="mui-appbar")
+     table(width="100%")
+      tr(style="vertical-align:middle;")
+        td( class="mui--appbar-height")
+        td(class="mui--appbar-height" align="right")
+          a(href="/") Home
+          a(href="/text") Text
+          a(href="/chat") Chat
+          a(href="/users") User list
+  div(class="container")        
+    h3(class="header-text")=`${data.loginName}'s pictures` 
+    div(class="new-img-block")        
+      div(class="img-big")
+        img(src="./../../img/nophoto.png", alt="" id="img-prw")
+      form(class="mui-form" id="img-form")
+        legend(id="form-legend") 
+        div(class="mui-textfield mui-textfield--float-label")
+          input(type="text" name="newName")
+          label Change file name
+        div(class="mui-textfield mui-textfield--float-label")
+          input(type="text" name="altText")
+          label Add alt text
+        div(class="width-two")  
+        div(class="mui-textfield mui-textfield--float-label")
+          input(type="number" name="imgWidth")
+          label Img width
+        div(class="mui-textfield mui-textfield--float-label")
+          input(type="number" name='imgHeigh')
+          label Img heigth
+        div(class="width-two")  
+        div(class="mui-textfield mui-textfield--float-label")
+          input(type="number" name="quality" )
+          label Quality
+        div(class="mui-checkbox")
+          label
+            input(type="checkbox" name="greyscale" value="true" )
+            span In greyscale   
+        button(type="submit" class="mui-btn mui-btn--raised") Save
+    
+
+    div(class="img-prw")
+      ul(class="img-list")
+        li(class="photo-upload") 
+          label(for="uploadPhoto") +  
+          input(type="file" name="fileUpload" id="uploadPhoto" )
+        each photo in data.photo 
+          li(class="with-photo" img-id=photo._id)
+            img(src=`./../${photo.path}/${photo.fileName}`, alt="" id="img-prw")
+            button(class="img-delete" img-id=photo._id) +
+  script(src="./../../js/userOne.js")                
