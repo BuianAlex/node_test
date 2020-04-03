@@ -45,13 +45,13 @@ app.get('/', (req, res) => {
 })
 
 function onAuthorizeFail(data, message, error, accept) {
-  console.log(message)
+  NODE_ENV === 'dev' && console.log(message)
   accept(null, !error)
 }
 
 function onAuthorizeSuccess(data, accept) {
-  console.log(data.user.loginName, 'successful connection to socket.io')
-
+  NODE_ENV === 'dev' &&
+    console.log(data.user.loginName, 'successful connection to socket.io')
   accept(null, true)
 }
 
@@ -69,11 +69,6 @@ app.use('/photo', photo)
 
 const files = require('./files/router')
 app.use('/files', files)
-
-io.use((socket, next) => {
-  console.log('socket')
-  next()
-})
 
 io.use(
   passportSocketIo.authorize({
@@ -176,8 +171,11 @@ app.use((error, req, res, next) => {
   }
 })
 
-http.listen(SERVER_PORT, () =>
-  console.log(`Server listening on port ${SERVER_PORT}!`)
+http.listen(
+  SERVER_PORT,
+  () =>
+    NODE_ENV === 'dev' &&
+    console.log(`Server listening on port ${SERVER_PORT}!`)
 )
 
 module.exports = { app, io }
