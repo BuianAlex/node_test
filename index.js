@@ -44,18 +44,14 @@ app.get('/', (req, res) => {
   res.render('index')
 })
 
-// or
-// This function accepts every client unless there's an error
 function onAuthorizeFail(data, message, error, accept) {
   console.log(message)
   accept(null, !error)
 }
 
 function onAuthorizeSuccess(data, accept) {
-  console.log('successful connection to socket.io')
+  console.log(data.user.loginName, 'successful connection to socket.io')
 
-  // The accept-callback still allows us to decide whether to
-  // accept the connection or not.
   accept(null, true)
 }
 
@@ -78,6 +74,7 @@ io.use((socket, next) => {
   console.log('socket')
   next()
 })
+
 io.use(
   passportSocketIo.authorize({
     key: 'connect.sid',
@@ -90,49 +87,77 @@ io.use(
   })
 )
 
+const userList = {}
+
 io.on('connection', socket => {
-  console.log(io.sockets.connected)
   socket.join('some_room')
   if (!socket.request.user.logged_in) {
-    io.to('some_room')
-      .to(socket.id)
-      .emit('not_aut')
-    // io.sockets.connected[socket.id].disconnect()
-    // socket.disconnect(true)
-  }
-
-  // socket.on('disconnect', () => {
-  //   delete usersList[socket.id]
-  // })
-
-  socket.on('new-user', () => {
-    io.to('some_room').emit('people online', usersList)
+    io.to(socket.id).emit('not_aut')
+    io.sockets.sockets[socket.id].disconnect(true)
+  } else {
+    userList[socket.id] = socket.request.user
     io.to('some_room').emit(
       'chat_message',
       `Welcome ${socket.request.user.loginName}`
     )
+    io.to('some_room').emit('people online', userList)
+  }
+
+  socket.on('disconnect', () => {
+    delete userList[socket.id]
+  })
+
+  socket.on('hint', () => {
+    io.to('some_room')
+      .to()
+      .emit('chat_message', 'FOR ADMIN: KICK>"userName">reason for kick')
+    io.to('some_room')
+      .to()
+      .emit('chat_message', ' FOR ALL: EXIT> to exit')
   })
 
   socket.on('chat_message', msg => {
-    console.log(io.sockets.clients())
+    let chatMsg = msg.trim()
+    // EXIT
+    const reg = /(EXIT)(>)/gm
+    const exitAction = reg.exec(msg)
+    if (exitAction && exitAction[1] === 'EXIT') {
+      io.sockets.sockets[socket.id].disconnect(true)
+    }
+    // ADMIN action
+    if (socket.request.user.isAdmin) {
+      const reg = /(KICK)(>)(.*)(>)(.*)/gm
+      const adminAction = reg.exec(msg)
+      if (adminAction) {
+        let userSidID = ''
+        switch (adminAction[1]) {
+          case 'KICK':
+            chatMsg = `User ${adminAction[3]} kick out from chat`
+            if (adminAction[5]) {
+              chatMsg += `because ${adminAction[5]}`
+            }
+            userSidID = Object.keys(userList).filter(
+              item => userList[item].loginName === adminAction[3]
+            )
+            if (io.sockets.sockets[userSidID]) {
+              io.sockets.sockets[userSidID].disconnect(true)
+            }
+            break
+          default:
+            break
+        }
+      }
+    }
 
-    // passportSocketIo
-    //   .filterSocketsByUser(io, function(user) {
-    //     return user.loginName === 'Alex'
-    //   })
-    //   .forEach(function(socket) {
-    //     socket.emit('chat_message', 'hello, woman!')
-    //   })
-    io.to('some_room').emit(
-      'chat_message',
-      `${socket.request.user.loginName}: ${socket.id}`
-    )
+    io.to('some_room')
+      .to()
+      .emit('chat_message', `${socket.request.user.loginName}: ${chatMsg}`)
   })
 
-  // setTimeout(function run() {
-  //   io.to('some_room').emit('people online', usersList)
-  //   setTimeout(run, 60000)
-  // }, 60000)
+  setTimeout(function run() {
+    io.to('some_room').emit('people online', userList)
+    setTimeout(run, 60000)
+  }, 60000)
 })
 
 app.get('*', (req, res) => {

@@ -16,8 +16,8 @@ const scheme = mongoose.Schema({
     type: String,
     required: true
   },
-  userGroup: {
-    type: String
+  isAdmin: {
+    type: Boolean
   },
   photo: [{ type: mongoose.Schema.Types.ObjectId, ref: fileStore }]
 })

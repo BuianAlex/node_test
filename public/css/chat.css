@@ -6,6 +6,8 @@
 body {
   font: 13px Helvetica, Arial;
   position: relative;
+  height: 100vh;
+  overflow: hidden;
 }
 #send-message {
   background: #000;
@@ -31,6 +33,8 @@ body {
   margin: 0;
   padding: 0;
   padding-bottom: 50px;
+  height: calc(100vh - 64px);
+  overflow-y: scroll;
 }
 #chat li {
   padding: 5px 10px;
@@ -63,7 +67,7 @@ body {
   width: 100px;
   left: 0;
   top: 68px;
-  height: calc(100vh - 110px);
+  height: calc(100vh - 108px);
   padding: 0 0.5rem;
   background-color: #fff;
   overflow: hidden;
@@ -89,4 +93,11 @@ body {
 }
 .mui-checkbox input {
   display: block;
+}
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  color: #2196f3;
 }

@@ -17,12 +17,13 @@ body
           a(href="/chat") Chat
           a(href="/users") Users list
   ul(id="chat")
-    form(action="" id="send-message")
-      input(id="m" autocomplete="off")
-      button Send
+  form(action="" id="send-message")
+    input(id="m" autocomplete="off")
+    button(type="submit") Send
   div(class="aside-left")
     <h6>Who is online:</h6>
     ul(class="who-online")
+    button(class="mui-btn hint") Hint
 
   </div>
  

@@ -1,7 +1,6 @@
 const socket = io()
-let userData = JSON.parse(localStorage.getItem('userData')) || ''
-
 const body = document.querySelector('body')
+const hintBtn = document.querySelector('.hint')
 const modalWraper = document.createElement('div')
 modalWraper.classList.add('modal-bg')
 const modalContent = document.createElement('div')
@@ -19,7 +18,7 @@ modalContent.innerHTML = `
   </div>
   <div class="mui-checkbox">
     <label>
-      <input type="checkbox" name="is_admin" value="false">
+      <input type="checkbox" name="is_admin" checked>
       Is admin
     </label>
   </div>
@@ -40,35 +39,26 @@ document.addEventListener('click', async e => {
         },
         body: JSON.stringify({
           loginName: e.target.form.log.value,
-          password: e.target.form.pass.value
+          password: e.target.form.pass.value,
+          isAdmin: e.target.form.is_admin.checked
         })
       })
       if (response.status === 200) {
-        const resApi = await response.json()
         body.removeChild(modalWraper)
-        localStorage.setItem('userData', JSON.stringify(resApi.result))
-        userData = resApi.result
-        socket.connect()
-        socket.emit('new-user')
+        location.reload()
       } else {
-        const resApi = await response.json()
-        alert(resApi.message)
+        alert(response.status)
       }
     } catch (error) {
       console.log(error)
     }
   }
+  if (e.target.classList.contains('hint')) {
+    socket.emit('hint')
+  }
 })
 
 modalWraper.appendChild(modalContent)
-
-// window.onload = function() {
-//   if (!userData) {
-//     body.appendChild(modalWraper)
-//   } else {
-//     startSocket()
-//   }
-// }
 
 function appendMessage(msg) {
   const message = document.createElement('li')
@@ -77,7 +67,6 @@ function appendMessage(msg) {
 }
 
 function usersBoard(list) {
-  console.log(JSON.stringify(list))
   const board = document.querySelector('.who-online')
   board.innerHTML = ''
   if (list) {
@@ -85,37 +74,45 @@ function usersBoard(list) {
     Object.keys(list).forEach(item => {
       const user = document.createElement('li')
       user.classList.add('user-name')
-      user.innerHTML = `<span>${list[item]}</span>`
+      user.innerHTML = `<span>${list[item].loginName}</span>`
       board.appendChild(user)
     })
   }
 }
 
 socket.on('people online', data => {
+  console.log('ping')
   usersBoard(data)
 })
 
-// socket.on('connect', function() {
-//   socket.emit('new-user', userData.loginName)
-// })
+socket.on('disconnect', () => {
+  body.appendChild(modalWraper)
+  fetch('/users/logout')
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      console.log(data)
+    })
+})
 
 socket.on('chat_message', data => {
   appendMessage(data)
 })
-// socket.on('user-connected', function(msg) {
-//   appendMessage(`Welcome ${msg}`)
-// })
-socket.on('not_aut', function() {
-  body.appendChild(modalWraper)
-})
-document.querySelector('#send-message').addEventListener('submit', e => {
-  e.preventDefault()
-  console.log('Sgs')
-  const inpMsg = document.getElementById('m')
-  socket.emit('chat_message', inpMsg.value)
-  inpMsg.value = ''
+
+socket.on('hint', data => {
+  appendMessage(data)
 })
 
-// function startSocket() {
-//   console.log(userData.loginName)
-// }
+socket.on('not_aut', () => {
+  body.appendChild(modalWraper)
+})
+
+document.querySelector('#send-message').addEventListener('submit', e => {
+  e.preventDefault()
+  const inpMsg = document.getElementById('m')
+  if (inpMsg.value.length > 0) {
+    socket.emit('chat_message', inpMsg.value)
+  }
+  inpMsg.value = ''
+})
