@@ -32,7 +32,7 @@ router.get('/logout', (req, res) => {
 router.get('/', (req, res, next) => {
   service
     .get()
-    .then(data => {
+    .then((data) => {
       res.render('usersList', { data: data })
     })
     .catch(next)
@@ -43,7 +43,7 @@ router.get('/get-one', (req, res, next) => {
   if (/^[0-9]+$/g.test(userID)) {
     service
       .getOne(userID)
-      .then(data => {
+      .then((data) => {
         if (data) {
           res.render('userOne', { data })
         } else {
@@ -62,10 +62,10 @@ router.post(
     console.log(req.body)
     service
       .create(req.body)
-      .then(data => {
+      .then((data) => {
         next()
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err)
         next(new HttpError('', 400))
       })
@@ -94,7 +94,6 @@ router.post(
   '/delete-photo',
   validate(validator.deletePhoto),
   async (req, res, next) => {
-    console.log('delete-photo', req.body)
     try {
       const result = await service.deletePhoto(req.body)
       res.send(result)
@@ -104,5 +103,9 @@ router.post(
     }
   }
 )
+
+router.post('/personal-info/:step', async (req, res, next) => {
+  res.send(req.params)
+})
 
 module.exports = router

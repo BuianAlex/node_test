@@ -1,4 +1,4 @@
-const UserQuery = require('./userSchema')
+const UserQuery = require('./schemas/userSchema')
 const { saveFile, deleteFile } = require('../files/service')
 const normalise = require('./normaliseUserData')
 const HttpError = require('../middleWare/errorMiddleware')

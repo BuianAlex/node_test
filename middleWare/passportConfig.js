@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy
-const userQuery = require('./../users/userSchema')
+const userQuery = require('./../users/schemas/userSchema')
 
 function initialize(passport) {
   const authenticateUser = async (username, password, done) => {
