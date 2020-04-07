@@ -45,6 +45,8 @@ router.get('/get-one', (req, res, next) => {
       .getOne(userID)
       .then((data) => {
         if (data) {
+          console.log(data)
+
           res.render('userOne', { data })
         } else {
           next(new HttpError('', 404))
@@ -105,6 +107,9 @@ router.post(
 )
 
 router.post('/personal-info/:step', async (req, res, next) => {
+  if (req.params.step === 'step-1') {
+    await service.userInfoStepOne(req)
+  }
   res.send(req.params)
 })
 

@@ -18,5 +18,6 @@ body
           a(href="/users") Users list
   ul(class="user-list")        
     each user in data.usersList
+      =JSON.stringify(user)
       li
-        a(href="/users/get-one?id="+user.userId)=user.loginName 
+        a(href="/users/get-one?id="+user.userNumb)=user.loginName 

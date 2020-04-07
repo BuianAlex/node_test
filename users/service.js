@@ -1,4 +1,10 @@
+const _ = require('lodash')
 const UserQuery = require('./schemas/userSchema')
+const HobbiQuery = require('./schemas/hobbiesSchema')
+const SkillQuery = require('./schemas/skillsSchema')
+const CoursesQuery = require('./schemas/coursesSchema')
+const PersInfoQuery = require('./schemas/persInfoSchema')
+const EvolutionQuery = require('./schemas/evolutionScheme')
 const { saveFile, deleteFile } = require('../files/service')
 const normalise = require('./normaliseUserData')
 const HttpError = require('../middleWare/errorMiddleware')
@@ -8,7 +14,7 @@ const get = async () => {
     const users = await UserQuery.find({}).populate('photo')
     let usersNormal = []
     if (users.length) {
-      usersNormal = users.map(item => normalise(item))
+      usersNormal = users.map((item) => normalise(item))
     }
     const resultDB = { usersList: usersNormal }
     return resultDB
@@ -17,16 +23,19 @@ const get = async () => {
   }
 }
 
-const getOne = id =>
-  UserQuery.findOne({ userId: id })
+const getOne = (id) =>
+  UserQuery.findOne({ userNumb: id })
     .populate('photo')
-    .then(data => data)
-    .catch(err => ({ status: 0, errorMessage: 'Not found' }))
+    .populate('evolution')
+    .populate('personalInfo')
+
+    .then((data) => data)
+    .catch((err) => ({ status: 0, errorMessage: 'Not found' }))
 
 const update = (id, body) =>
   new Promise((resolve, reject) => {
     UserQuery.findOne({ userId: id })
-      .then(async data => {
+      .then(async (data) => {
         if (data) {
           if (body.photo) {
             if (!data.photo.length) {
@@ -39,7 +48,7 @@ const update = (id, body) =>
             }
           }
 
-          Object.keys(body).forEach(async key => {
+          Object.keys(body).forEach(async (key) => {
             if (key !== 'password' && key !== 'photo') {
               data[key] = body[key]
             }
@@ -52,7 +61,7 @@ const update = (id, body) =>
       .catch(reject)
   })
 
-const create = async body => {
+const create = async (body) => {
   const testIfExist = await UserQuery.find({ loginName: body.loginName })
   if (testIfExist.length > 0) {
     return new Promise((resolve, reject) => {
@@ -67,7 +76,7 @@ const create = async body => {
 
   const newUser = new UserQuery(body)
   return new Promise((resolve, reject) => {
-    newUser.save(err => {
+    newUser.save((err) => {
       if (err) return reject(err)
       resolve()
       // saved!
@@ -75,9 +84,9 @@ const create = async body => {
   })
 }
 
-const remove = id => UserQuery.findByIdAndRemove(id)
+const remove = (id) => UserQuery.findByIdAndRemove(id)
 
-const deleteMany = idS => UserQuery.deleteMany({ userId: idS })
+const deleteMany = (idS) => UserQuery.deleteMany({ userId: idS })
 
 function calcObjectValue(holder, kayName, object) {
   let value = holder[object[kayName]]
@@ -112,7 +121,7 @@ async function deletePhoto(fileData) {
     await deleteFile(fileData.imgID)
     const userImages = [...user.photo]
     const restImg = userImages.filter(
-      img => img._id.toString() !== fileData.imgID
+      (img) => img._id.toString() !== fileData.imgID
     )
     user.photo = restImg
     await user.save()
@@ -127,6 +136,58 @@ async function deletePhoto(fileData) {
   }
 }
 
+async function userInfoStepOne(req) {
+  const { body: dataObject } = req
+  const { userNumb, personalInfo, evolution } = dataObject
+
+  let userId = {}
+  if (userNumb) {
+    userId = userNumb
+  } else {
+    userId = req.user.userNumb
+  }
+  const userTmp = {}
+  try {
+    const userData = await UserQuery.findOne({ userNumb: userId })
+    console.log(userData)
+
+    if (personalInfo) {
+      const userInfo = await PersInfoQuery.create(dataObject.personalInfo)
+      userData.personalInfo = userInfo._id
+    }
+    if (evolution) {
+      const tempEvolution = { hobbies: [], courses: [], skills: [] }
+      const { hobbies, courses, skills, ...rest } = evolution
+      if (hobbies) {
+        const resHobbi = await HobbiQuery.insertMany(hobbies)
+        const hobbiesIds = resHobbi.map((item) => item.id)
+        tempEvolution.hobbies = [...hobbiesIds]
+      }
+      if (courses) {
+        const resCourses = await CoursesQuery.insertMany(courses)
+        const coursesIds = resCourses.map((item) => item.id)
+        tempEvolution.courses = [...coursesIds]
+      }
+      if (skills) {
+        const resSkills = await SkillQuery.insertMany(skills)
+        const skillsIds = resSkills.map((item) => item.id)
+        tempEvolution.skills = [...skillsIds]
+      }
+
+      const userEvolution = await EvolutionQuery.create({
+        ...tempEvolution,
+        ...rest,
+      })
+      userData.evolution = userEvolution._id
+    }
+
+    console.log(userData)
+    return userData.save()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 module.exports = {
   get,
   getOne,
@@ -135,5 +196,6 @@ module.exports = {
   remove,
   deleteMany,
   addPhoto,
-  deletePhoto
+  deletePhoto,
+  userInfoStepOne,
 }

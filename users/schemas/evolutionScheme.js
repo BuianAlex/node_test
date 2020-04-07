@@ -1,12 +1,23 @@
 const mongoose = require('mongoose')
-const hobbies = require('./hobbiesSchema')
-const courses = require('./coursesSchema')
-const skills = require('./skillsSchema')
 
-const evolutionSchema = mongoose.Schema({
-  hobbies: [{ type: mongoose.Schema.Types.ObjectId, ref: hobbies }],
-  courses: [{ type: mongoose.Schema.Types.ObjectId, ref: courses }],
-  skills: [{ type: mongoose.Schema.Types.ObjectId, ref: skills }],
+const schema = mongoose.Schema({
+  hobbies: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'hobbies',
+      autopopulate: true,
+    },
+  ],
+  courses: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'courses',
+      autopopulate: true,
+    },
+  ],
+  skills: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'skils', autopopulate: true },
+  ],
   isSectionStarted: {
     type: Boolean,
   },
@@ -23,6 +34,6 @@ const evolutionSchema = mongoose.Schema({
     type: Boolean,
   },
 })
-
-const EvolutionQuery = mongoose.model('evolution', evolutionSchema)
+schema.plugin(require('mongoose-autopopulate'))
+const EvolutionQuery = mongoose.model('evolution', schema)
 module.exports = EvolutionQuery

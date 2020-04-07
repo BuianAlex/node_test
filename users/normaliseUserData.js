@@ -1,24 +1,9 @@
-module.exports = data => {
-  const {
-    userId,
-    loginName,
-    email,
-    phone,
-    photo,
-    usergroup,
-    lastVisit,
-    registrated,
-    online
-  } = data;
+module.exports = (data) => {
+  const { userNumb, loginName, photo, isAdmin } = data
   return {
-    userId,
+    userNumb,
     loginName,
-    email,
-    phone,
+    isAdmin,
     photo,
-    usergroup,
-    lastVisit,
-    registrated,
-    online
-  };
-};
+  }
+}
