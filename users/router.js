@@ -106,7 +106,7 @@ router.post(
   }
 )
 
-router.post('/personal-info/:step', async (req, res, next) => {
+router.post('/personal-info/:step', validate(validator.addPersonalInfo), async (req, res, next) => {
   try {
     await service.personalInfoByStep(req)
     res.send(req.params)

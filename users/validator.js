@@ -5,4 +5,5 @@ const deleteMany = require('./validateSchemas/deleteMany')
 const addPhoto = require('./validateSchemas/addPhoto')
 const deletePhoto = require('./validateSchemas/deletePhoto')
 const addEvolution = require('./validateSchemas/addEvolution')
-module.exports = { create, login, edit, deleteMany, deletePhoto, addPhoto, addEvolution }
+const addPersonalInfo = require('./validateSchemas/addPersonalInfo')
+module.exports = { create, login, edit, deleteMany, deletePhoto, addPhoto, addEvolution, addPersonalInfo }

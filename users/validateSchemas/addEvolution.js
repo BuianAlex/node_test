@@ -40,8 +40,12 @@ const schema = {
           improvements: { type: 'string' }
         }
       }
-    }
-
+    },
+    isSectionStarted: { type: 'boolean' },
+    isSectionComplete: { type: 'boolean' },
+    isPage1Complete: { type: 'boolean' },
+    isPage2Complete: { type: 'boolean' },
+    isPage3Complete: { type: 'boolean' }
   },
   additionalProperties: false
 }

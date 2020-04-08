@@ -1,71 +1,71 @@
 const mongoose = require('mongoose')
 const scheme = mongoose.Schema({
   firstName: {
-    type: String,
+    type: String
   },
   lastName: {
-    type: String,
+    type: String
   },
   givenName: {
-    type: String,
+    type: String
   },
   surname: {
-    type: String,
+    type: String
   },
   job: {
-    type: String,
+    type: String
   },
   nationality: {
-    type: String,
+    type: String
   },
   phoneNumber: {
-    type: String,
+    type: String
   },
   homeAddress: {
-    type: String,
+    type: String
   },
   city: {
-    type: String,
+    type: String
   },
   postCode: {
-    type: String,
+    type: String
   },
   country: {
-    type: String,
+    type: String
   },
   passportStatus: {
-    type: String,
+    type: String
   },
   passportNumber: {
-    type: String,
+    type: String
   },
   passportExpectedDate: {
-    type: String,
+    type: String
   },
   passportExpiryDate: {
-    type: String,
+    type: String
   },
   isSectionStarted: {
-    type: Boolean,
+    type: Boolean
   },
   isSectionComplete: {
-    type: Boolean,
+    type: Boolean
   },
   isPage1Complete: {
-    type: Boolean,
+    type: Boolean
   },
   isPage2Complete: {
-    type: Boolean,
+    type: Boolean
   },
   isPage3Complete: {
-    type: Boolean,
+    type: Boolean
   },
   isPage4Complete: {
-    type: Boolean,
+    type: Boolean
   },
   isPage5Complete: {
-    type: Boolean,
-  },
+    type: Boolean
+  }
 })
 
 const PersInfo = mongoose.model('personalInfo', scheme)
