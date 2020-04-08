@@ -2,6 +2,7 @@ const router = require('express').Router()
 const passport = require('passport')
 const service = require('./service')
 const HttpError = require('../middleWare/errorMiddleware')
+const checkPermissios = require('../middleWare/permissionsMiddleware')
 const validate = require('../middleWare/validateMiddleware')
 const validator = require('./validator')
 
@@ -9,6 +10,7 @@ const normalise = require('./normaliseUserData')
 
 router.post(
   '/login',
+  validate(validator.login),
   passport.authenticate('local', { failWithError: true }),
   (req, res, next) => {
     if (req.user) {
@@ -106,21 +108,21 @@ router.post(
   }
 )
 
-router.post('/personal-info/:step', validate(validator.addPersonalInfo), async (req, res, next) => {
+router.post('/personal-info/:step', checkPermissios.updateByID, validate(validator.addPersonalInfo), async (req, res, next) => {
   try {
     await service.personalInfoByStep(req)
-    res.send(req.params)
+    res.sendStatus(200)
   } catch (error) {
-    next(new HttpError(error.message, 400))
+    next(error)
   }
 })
 
-router.post('/evolution/:step', validate(validator.addEvolution), async (req, res, next) => {
+router.post('/evolution/:step', checkPermissios.onlyAuthenficated, validate(validator.addEvolution), async (req, res, next) => {
   try {
     await service.updateEvolution(req)
-    res.send(req.body)
+    res.sendStatus(200)
   } catch (error) {
-    next(new HttpError(error.message, 400))
+    next(error)
   }
 })
 

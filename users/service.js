@@ -27,7 +27,6 @@ const getOne = (id) =>
     .populate('photo')
     .populate('evolution')
     .populate('personalInfo')
-
     .then((data) => data)
     .catch((err) => ({ status: 0, errorMessage: 'Not found' }))
 
@@ -142,7 +141,7 @@ async function personalInfoByStep (req) {
   if (userNumb) {
     userId = userNumb
   } else {
-    userId = 0 // req.user.userNumb
+    userId = req.user.userNumb
   }
   try {
     const userData = await UserQuery.findOne({ userNumb: userId })
@@ -190,32 +189,16 @@ async function personalInfoByStep (req) {
   }
 }
 
-// async function personalInfoByStep (req) {
-//   console.log(req.body);
-
-//   const tmpId = 0 // temp
-//   const userData = await UserQuery.findOne({ userNumb: tmpId })
-//   const personalInfoData = await PersInfoQuery.findById(userData.personalInfo)
-//   if (req.params.step === 'step-1') {
-//     Object.keys(req.body).forEach(key => {
-//       personalInfoData[key] = req.body[key]
-//     })
-//   }
-//   personalInfoData.save()
-// }
-
 async function updateEvolution (req) {
-  const tmpId = 0
+  const userId = req.user.userNumb
   const { hobbies } = req.body
-  console.log(hobbies)
   try {
     if (req.params.step === 'step-1') {
-      const userData = await UserQuery.findOne({ userNumb: tmpId })
+      const userData = await UserQuery.findOne({ userNumb: userId })
       const userEvolution = await EvolutionQuery.findOne(userData.evolution) || new EvolutionQuery()
       if (hobbies && hobbies.length > 0) {
         const resHobbi = await HobbiQuery.insertMany(hobbies)
         const hobbiesIds = resHobbi.map((item) => item.id)
-        console.log(hobbiesIds)
         userEvolution.hobbies.push([...hobbiesIds])
         return userEvolution.save()
       }

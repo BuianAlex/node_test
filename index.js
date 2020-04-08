@@ -27,7 +27,7 @@ app.use(
     name: 'connect.sid',
     resave: false,
     cookie: { secure: false },
-    saveUninitialized: true,
+    saveUninitialized: true
   })
 )
 app.use(bodyParser.json())
@@ -44,12 +44,12 @@ app.get('/', (req, res) => {
   res.render('index')
 })
 
-function onAuthorizeFail(data, message, error, accept) {
+function onAuthorizeFail (data, message, error, accept) {
   NODE_ENV === 'dev' && console.log(message)
   accept(null, !error)
 }
 
-function onAuthorizeSuccess(data, accept) {
+function onAuthorizeSuccess (data, accept) {
   NODE_ENV === 'dev' &&
     console.log(data.user.loginName, 'successful connection to socket.io')
   accept(null, true)
@@ -78,7 +78,7 @@ io.use(
     passport: passport,
     cookieParser: cookieParser,
     success: onAuthorizeSuccess, // *optional* callback on success
-    fail: onAuthorizeFail, // *optional* callback on fail/error
+    fail: onAuthorizeFail // *optional* callback on fail/error
   })
 )
 
@@ -147,19 +147,19 @@ io.on('connection', (socket) => {
       .emit('chat_message', `${socket.request.user.loginName}: ${chatMsg}`)
   })
 
-  setTimeout(function run() {
+  setTimeout(function run () {
     io.to('some_room').emit('people online', userList)
     setTimeout(run, 60000)
   }, 60000)
 })
 
 app.get('*', (req, res) => {
-  res.sendStatus(404)
+  res.status(404).send('Forbidden/Not found')
 })
 
 app.use((error, req, res, next) => {
   NODE_ENV === 'dev' && console.error('Main error handler', error)
-  if (error) {
+  if (error && error.status) {
     res.status(error.status)
     res.send(error)
   } else {

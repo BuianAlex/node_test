@@ -1,21 +1,21 @@
-const ajv = require("ajv")({ $data: true });
+const ajv = require('ajv')({ $data: true })
 
-require("ajv-keywords")(ajv);
+require('ajv-keywords')(ajv)
 
 const schema = {
-  type: "object",
+  type: 'object',
   properties: {
     loginName: {
-      type: "string"
+      type: 'string'
     },
     password: {
-      type: "string"
+      type: 'string'
     }
   },
-  required: ["loginName", "password"],
+  required: ['loginName', 'password'],
   additionalProperties: false
-};
+}
 
-const validate = ajv.compile(schema);
+const validate = ajv.compile(schema)
 
-module.exports = validate;
+module.exports = validate
