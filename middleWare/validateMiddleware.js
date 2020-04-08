@@ -1,7 +1,7 @@
 const HttpError = require('./errorMiddleware')
 
 const validate = (validator, ...args) => (req, res, next) => {
-  console.log(req.body)
+  console.log('req', req.body)
 
   let validatorFnc
   if (args.length > 0) {
@@ -9,9 +9,10 @@ const validate = (validator, ...args) => (req, res, next) => {
   } else {
     validatorFnc = validator
   }
+
   if (!validatorFnc(req.body)) {
     console.error('validator Error')
-    next(new HttpError('', 400))
+    next(new HttpError('FIELD_VALIDATION', 400))
   } else {
     next()
   }

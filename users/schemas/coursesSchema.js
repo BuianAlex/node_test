@@ -3,20 +3,20 @@ const coursesSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: true
     },
     timeStarted: {
-      type: String,
+      type: String
     },
     timeEnd: {
-      type: String,
+      type: String
     },
     isKeepOnDoing: {
-      type: Boolean,
+      type: Boolean
     },
     doYouLikeIt: {
-      type: Boolean,
-    },
+      type: Boolean
+    }
   },
   { timestamps: true }
 )

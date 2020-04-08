@@ -115,7 +115,7 @@ router.post('/personal-info/:step', async (req, res, next) => {
   }
 })
 
-router.post('/evolution/:step', async (req, res, next) => {
+router.post('/evolution/:step', validate(validator.addEvolution), async (req, res, next) => {
   try {
     await service.updateEvolution(req)
     res.send(req.body)
