@@ -1,4 +1,3 @@
-const _ = require('lodash')
 const UserQuery = require('./schemas/userSchema')
 const HobbiQuery = require('./schemas/hobbiesSchema')
 const SkillQuery = require('./schemas/skillsSchema')
@@ -86,9 +85,9 @@ const create = async (body) => {
 
 const remove = (id) => UserQuery.findByIdAndRemove(id)
 
-const deleteMany = (idS) => UserQuery.deleteMany({ userId: idS })
+const deleteMany = (idS) => UserQuery.deleteMany({ userNumb: idS })
 
-function calcObjectValue(holder, kayName, object) {
+function calcObjectValue (holder, kayName, object) {
   let value = holder[object[kayName]]
   if (!value) {
     value = 0
@@ -97,11 +96,11 @@ function calcObjectValue(holder, kayName, object) {
   holder[object[kayName]] = value
 }
 
-async function addPhoto(fileData) {
-  const savePath = `img/users/${fileData.userID}`
+async function addPhoto (fileData) {
+  const savePath = `img/users/${fileData.userNumb}`
   try {
     const file = await saveFile(savePath, fileData)
-    const user = await UserQuery.findOne({ userId: fileData.userID })
+    const user = await UserQuery.findOne({ userNumb: fileData.userNumb })
     user.photo.push(file._id)
     await user.save()
     return new Promise((resolve, reject) => {
@@ -115,9 +114,9 @@ async function addPhoto(fileData) {
   }
 }
 
-async function deletePhoto(fileData) {
+async function deletePhoto (fileData) {
   try {
-    const user = await UserQuery.findOne({ userId: fileData.userID })
+    const user = await UserQuery.findOne({ userNumb: fileData.userNumb })
     await deleteFile(fileData.imgID)
     const userImages = [...user.photo]
     const restImg = userImages.filter(
@@ -129,62 +128,102 @@ async function deletePhoto(fileData) {
       resolve(true)
     })
   } catch (error) {
-    console.error(error)
     return new Promise((resolve, reject) => {
       reject(new HttpError(error.message, 400))
     })
   }
 }
 
-async function userInfoStepOne(req) {
+async function personalInfoByStep (req) {
   const { body: dataObject } = req
-  const { userNumb, personalInfo, evolution } = dataObject
+  const { userNumb, personalInfo, evolution, ...rest } = dataObject
 
   let userId = {}
   if (userNumb) {
     userId = userNumb
   } else {
-    userId = req.user.userNumb
+    userId = 0 // req.user.userNumb
   }
-  const userTmp = {}
   try {
     const userData = await UserQuery.findOne({ userNumb: userId })
-    console.log(userData)
-
+    const userInfo = await PersInfoQuery.findOne(userData.personalInfo) || new PersInfoQuery()
+    Object.keys(rest).forEach(key => {
+      userInfo[key] = rest[key]
+    })
     if (personalInfo) {
-      const userInfo = await PersInfoQuery.create(dataObject.personalInfo)
-      userData.personalInfo = userInfo._id
+      Object.keys(personalInfo).forEach(key => {
+        userInfo[key] = personalInfo[key]
+      })
     }
+    await userInfo.save()
+    userData.personalInfo = userInfo._id
+
     if (evolution) {
-      const tempEvolution = { hobbies: [], courses: [], skills: [] }
+      const userEvolution = await EvolutionQuery.findOne(userData.evolution) || new EvolutionQuery()
       const { hobbies, courses, skills, ...rest } = evolution
       if (hobbies) {
         const resHobbi = await HobbiQuery.insertMany(hobbies)
         const hobbiesIds = resHobbi.map((item) => item.id)
-        tempEvolution.hobbies = [...hobbiesIds]
+        userEvolution.hobbies = [...hobbiesIds]
       }
       if (courses) {
         const resCourses = await CoursesQuery.insertMany(courses)
         const coursesIds = resCourses.map((item) => item.id)
-        tempEvolution.courses = [...coursesIds]
+        userEvolution.courses = [...coursesIds]
       }
       if (skills) {
         const resSkills = await SkillQuery.insertMany(skills)
         const skillsIds = resSkills.map((item) => item.id)
-        tempEvolution.skills = [...skillsIds]
+        userEvolution.skills = [...skillsIds]
       }
-
-      const userEvolution = await EvolutionQuery.create({
-        ...tempEvolution,
-        ...rest,
+      Object.keys(rest).forEach(key => {
+        userEvolution[key] = rest[key]
       })
+      await userEvolution.save()
       userData.evolution = userEvolution._id
     }
-
-    console.log(userData)
     return userData.save()
   } catch (error) {
-    console.log(error)
+    return new Promise((resolve, reject) => {
+      reject(error)
+    })
+  }
+}
+
+// async function personalInfoByStep (req) {
+//   console.log(req.body);
+
+//   const tmpId = 0 // temp
+//   const userData = await UserQuery.findOne({ userNumb: tmpId })
+//   const personalInfoData = await PersInfoQuery.findById(userData.personalInfo)
+//   if (req.params.step === 'step-1') {
+//     Object.keys(req.body).forEach(key => {
+//       personalInfoData[key] = req.body[key]
+//     })
+//   }
+//   personalInfoData.save()
+// }
+
+async function updateEvolution (req) {
+  const tmpId = 0
+  const { hobbies } = req.body
+  console.log(hobbies)
+  try {
+    if (req.params.step === 'step-1') {
+      const userData = await UserQuery.findOne({ userNumb: tmpId })
+      const userEvolution = await EvolutionQuery.findOne(userData.evolution) || new EvolutionQuery()
+      if (hobbies && hobbies.length > 0) {
+        const resHobbi = await HobbiQuery.insertMany(hobbies)
+        const hobbiesIds = resHobbi.map((item) => item.id)
+        console.log(hobbiesIds)
+        userEvolution.hobbies.push([...hobbiesIds])
+        return userEvolution.save()
+      }
+    }
+  } catch (error) {
+    return new Promise((resolve, reject) => {
+      reject(error)
+    })
   }
 }
 
@@ -197,5 +236,6 @@ module.exports = {
   deleteMany,
   addPhoto,
   deletePhoto,
-  userInfoStepOne,
+  personalInfoByStep,
+  updateEvolution
 }

@@ -1,5 +1,11 @@
 const mongoose = require('mongoose')
 const scheme = mongoose.Schema({
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
   givenName: {
     type: String,
   },

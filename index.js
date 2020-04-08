@@ -27,7 +27,7 @@ app.use(
     name: 'connect.sid',
     resave: false,
     cookie: { secure: false },
-    saveUninitialized: true
+    saveUninitialized: true,
   })
 )
 app.use(bodyParser.json())
@@ -78,13 +78,13 @@ io.use(
     passport: passport,
     cookieParser: cookieParser,
     success: onAuthorizeSuccess, // *optional* callback on success
-    fail: onAuthorizeFail // *optional* callback on fail/error
+    fail: onAuthorizeFail, // *optional* callback on fail/error
   })
 )
 
 const userList = {}
 
-io.on('connection', socket => {
+io.on('connection', (socket) => {
   socket.join('some_room')
   if (!socket.request.user.logged_in) {
     io.to(socket.id).emit('not_aut')
@@ -106,12 +106,10 @@ io.on('connection', socket => {
     io.to('some_room')
       .to()
       .emit('chat_message', 'FOR ADMIN: KICK>"userName">reason for kick')
-    io.to('some_room')
-      .to()
-      .emit('chat_message', ' FOR ALL: EXIT> to exit')
+    io.to('some_room').to().emit('chat_message', ' FOR ALL: EXIT> to exit')
   })
 
-  socket.on('chat_message', msg => {
+  socket.on('chat_message', (msg) => {
     let chatMsg = msg.trim()
     // EXIT
     const reg = /(EXIT)(>)/gm
@@ -132,7 +130,7 @@ io.on('connection', socket => {
               chatMsg += `because ${adminAction[5]}`
             }
             userSidID = Object.keys(userList).filter(
-              item => userList[item].loginName === adminAction[3]
+              (item) => userList[item].loginName === adminAction[3]
             )
             if (io.sockets.sockets[userSidID]) {
               io.sockets.sockets[userSidID].disconnect(true)
@@ -160,7 +158,7 @@ app.get('*', (req, res) => {
 })
 
 app.use((error, req, res, next) => {
-  NODE_ENV === 'dev' && console.error('use', error)
+  NODE_ENV === 'dev' && console.error('Main error handler', error)
   if (error) {
     res.status(error.status)
     res.send(error)

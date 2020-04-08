@@ -5,34 +5,34 @@ const schema = mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'hobbies',
-      autopopulate: true,
-    },
+      autopopulate: true
+    }
   ],
   courses: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'courses',
-      autopopulate: true,
-    },
+      autopopulate: true
+    }
   ],
   skills: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'skils', autopopulate: true },
+    { type: mongoose.Schema.Types.ObjectId, ref: 'skils', autopopulate: true }
   ],
   isSectionStarted: {
-    type: Boolean,
+    type: Boolean
   },
   isSectionComplete: {
-    type: Boolean,
+    type: Boolean
   },
   isPage1Complete: {
-    type: Boolean,
+    type: Boolean
   },
   isPage2Complete: {
-    type: Boolean,
+    type: Boolean
   },
   isPage3Complete: {
-    type: Boolean,
-  },
+    type: Boolean
+  }
 })
 schema.plugin(require('mongoose-autopopulate'))
 const EvolutionQuery = mongoose.model('evolution', schema)

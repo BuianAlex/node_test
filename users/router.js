@@ -16,7 +16,7 @@ router.post(
     }
   },
   (err, req, res, next) => {
-    if (err.status == 401) {
+    if (err.status === 401) {
       err.message = `Sorry, the member name and password
     you entered do not match. Please try again`
     }
@@ -107,10 +107,21 @@ router.post(
 )
 
 router.post('/personal-info/:step', async (req, res, next) => {
-  if (req.params.step === 'step-1') {
-    await service.userInfoStepOne(req)
+  try {
+    await service.personalInfoByStep(req)
+    res.send(req.params)
+  } catch (error) {
+    next(new HttpError(error.message, 400))
   }
-  res.send(req.params)
+})
+
+router.post('/evolution/:step', async (req, res, next) => {
+  try {
+    await service.updateEvolution(req)
+    res.send(req.body)
+  } catch (error) {
+    next(new HttpError(error.message, 400))
+  }
 })
 
 module.exports = router

@@ -17,6 +17,7 @@ li {
   transform: translate(-50%, -50%);
 } */
 .container {
+  display: flex;
   padding: 1rem;
 }
 .send-form {

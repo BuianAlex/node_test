@@ -3,14 +3,14 @@ const hobbiesSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: true
     },
     timeStarted: {
-      type: String,
+      type: String
     },
     isKeepOnDoing: {
-      type: String,
-    },
+      type: String
+    }
   },
   { timestamps: true }
 )

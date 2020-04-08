@@ -1,6 +1,8 @@
 const HttpError = require('./errorMiddleware')
 
 const validate = (validator, ...args) => (req, res, next) => {
+  console.log(req.body)
+
   let validatorFnc
   if (args.length > 0) {
     validatorFnc = validator(...args.map(arg => arg(req)))

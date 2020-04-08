@@ -1,9 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const autoIncrement = require('mongoose-auto-increment')
-// const fileStore = require('./../../files/filesScheme')
-// const personalInfo = require('./persInfoSchema')
-// const evolution = require('./evolutionScheme')
 
 SALT_WORK_FACTOR = 10
 
@@ -12,17 +9,17 @@ const schema = mongoose.Schema({
     type: String,
     required: true,
     index: true,
-    unique: true,
+    unique: true
   },
   password: {
-    type: String,
+    type: String
   },
   isAdmin: {
-    type: Boolean,
+    type: Boolean
   },
   photo: [{ type: mongoose.Schema.Types.ObjectId, ref: 'files' }],
   personalInfo: { type: mongoose.Schema.Types.ObjectId, ref: 'personalInfo' },
-  evolution: { type: mongoose.Schema.Types.ObjectId, ref: 'evolution' },
+  evolution: { type: mongoose.Schema.Types.ObjectId, ref: 'evolution' }
 })
 
 schema.pre('save', function (next) {
@@ -41,12 +38,11 @@ schema.pre('save', function (next) {
   })
 })
 
-schema.methods.validatePassword = async function validatePassword(data) {
+schema.methods.validatePassword = async function validatePassword (data) {
   return bcrypt.compare(data, this.password)
 }
-
 schema.plugin(autoIncrement.plugin, { model: 'user', field: 'userNumb' })
-schema.plugin(require('mongoose-autopopulate'))
+
 const userScheme = mongoose.model('user', schema)
 
 module.exports = userScheme
