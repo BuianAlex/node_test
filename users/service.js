@@ -27,7 +27,9 @@ const getOne = (id) =>
     .populate('photo')
     .populate('evolution')
     .populate('personalInfo')
-    .then((data) => data)
+    .then((data) => {
+      return data
+    })
     .catch((err) => ({ status: 0, errorMessage: 'Not found' }))
 
 const create = async (body) => {

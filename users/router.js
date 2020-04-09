@@ -47,8 +47,6 @@ router.get('/get-one', (req, res, next) => {
       .getOne(userID)
       .then((data) => {
         if (data) {
-          console.log(data)
-
           res.render('userOne', { data })
         } else {
           next(new HttpError('', 404))

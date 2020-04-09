@@ -1,6 +1,7 @@
 const express = require('express')
 const compression = require('compression')
 const bodyParser = require('body-parser')
+const fs = require('fs')
 const path = require('path')
 const redis = require('redis')
 const passportSocketIo = require('passport.socketio')
@@ -10,16 +11,18 @@ const redisClient = redis.createClient()
 const cookieParser = require('cookie-parser')
 const passport = require('passport')
 require('dotenv').config()
-require('./db/conectDB')
+require('./db/connectDB')
 const { SERVER_PORT, NODE_ENV } = process.env
 const app = express()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 const initPassport = require('./middleWare/passportConfig')
+const HttpError = require('./middleWare/errorMiddleware')
 app.use(compression())
 app.set('views', './views')
 app.set('view engine', 'pug')
 const sessionStore = new RedisStore({ client: redisClient })
+const errorLog = fs.createWriteStream(path.join(__dirname, 'logs/error.log'), { flags: 'a' })
 app.use(
   session({
     store: sessionStore,
@@ -35,12 +38,14 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(passport.initialize())
 app.use(passport.session())
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'views/public')))
 initPassport(passport)
 redisClient.on('error', console.error)
 redisClient.on('ready', () => console.log('redis ok'))
 
 app.get('/', (req, res) => {
+  console.log(req)
+
   res.render('index')
 })
 
@@ -153,16 +158,23 @@ io.on('connection', (socket) => {
   }, 60000)
 })
 
-app.get('*', (req, res) => {
-  res.status(404).send('Forbidden/Not found')
+app.get('*', (req, res, next) => {
+  next(new HttpError('Forbidden/Not found', 404))
 })
 
-app.post('*', (req, res) => {
-  res.status(404).send('Forbidden/Not found')
+app.post('*', (req, res, next) => {
+  next(new HttpError('Forbidden/Not found', 404))
 })
 
 app.use((error, req, res, next) => {
   NODE_ENV === 'dev' && console.error('Main error handler', error)
+  errorLog.write(`${JSON.stringify({
+    time: Date.now(),
+    url: req.url,
+    method: req.method,
+    message: error.message,
+    stack: error.stack
+  })}\n`)
   if (error && error.status) {
     res.status(error.status)
     res.send(error)

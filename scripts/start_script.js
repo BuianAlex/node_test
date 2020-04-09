@@ -1,40 +1,15 @@
-process.env.SERVER_PORT = 8080
-process.env.DB_HOSTNAME = '127.0.0.1'
-process.env.DB_PORT = 27017
-process.env.DB_NAME = 'chat'
-
-const mongoose = require('mongoose')
-const autoIncrement = require('mongoose-auto-increment')
-
-const { DB_HOSTNAME, DB_PORT, DB_NAME, NODE_ENV } = process.env
-const url = `mongodb://${DB_HOSTNAME}:${DB_PORT}/${DB_NAME}`
-
-mongoose.connect(url, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-  useFindAndModify: false
-})
-mongoose.set('useCreateIndex', true)
-const { connection } = mongoose
-
-connection.on('error', console.error.bind(console, 'connection error:'))
-
-connection.once('open', () => {
-  NODE_ENV === 'dev' && console.log(`db  ${DB_NAME} connected!`)
-})
-
-autoIncrement.initialize(connection)
-
-const userQuery = require('./../users/userSchema')
-
+require('dotenv').config({ path: '../.env' })
+const connection = require('mongoose').connection
+require('../db/connectDB')
 const readline = require('readline')
+const userQuery = require('../users/schemas/userSchema')
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 })
 
-function userName() {
+function userName () {
   return new Promise(resolve => {
     rl.question('Set user name (min: 3 letters): ', name => {
       resolve(name)
@@ -42,7 +17,7 @@ function userName() {
   })
 }
 
-function userPassword() {
+function userPassword () {
   return new Promise(resolve => {
     rl.question('Set user password (min: 6 characters): ', pass => {
       resolve(pass)
@@ -50,7 +25,7 @@ function userPassword() {
   })
 }
 
-function userGroup() {
+function userGroup () {
   return new Promise(resolve => {
     rl.question('Set user group user(U), admin(A): ', group => {
       resolve(group)
@@ -58,7 +33,7 @@ function userGroup() {
   })
 }
 
-function toSave(name) {
+function toSave (name) {
   return new Promise(resolve => {
     rl.question(`Save to db new user with login: ${name} (y/n):`, ans => {
       resolve(ans)
@@ -66,7 +41,7 @@ function toSave(name) {
   })
 }
 
-async function saveNewUser() {
+async function saveNewUser () {
   const user = {}
   do {
     user.loginName = await userName()
@@ -89,7 +64,7 @@ async function saveNewUser() {
         user.usergroup = false
         break
     }
-    const newUser = new userQuery(user)
+    const newUser = userQuery(user)
     try {
       const res = await newUser.save()
       process.stdout.write('New user was created: \n' + res)
@@ -104,4 +79,8 @@ async function saveNewUser() {
     process.exit(0)
   }
 }
-saveNewUser()
+
+connection.once('open', () => {
+  console.log(`db: ${process.env.DB_NAME} successfully connected!`)
+  saveNewUser()
+})
