@@ -32,7 +32,8 @@ const updateByID = (req, res, next) => {
   if (userNumb) {
     onlyAdmin(req, res, next)
   } else {
-    next()
+    onlyAuthenficated(req, res, next)
   }
 }
+
 module.exports = { onlyAdmin, userCreate, onlyAuthenficated, updateByID }

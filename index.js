@@ -26,7 +26,7 @@ app.use(
     secret: 'keyboard cat',
     name: 'connect.sid',
     resave: false,
-    cookie: { secure: true, maxAge: 60000 },
+    // cookie: { secure: false },
     saveUninitialized: true
   })
 )

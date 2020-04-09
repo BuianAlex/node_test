@@ -30,35 +30,6 @@ const getOne = (id) =>
     .then((data) => data)
     .catch((err) => ({ status: 0, errorMessage: 'Not found' }))
 
-const update = (id, body) =>
-  new Promise((resolve, reject) => {
-    UserQuery.findOne({ userId: id })
-      .then(async (data) => {
-        if (data) {
-          if (body.photo) {
-            if (!data.photo.length) {
-              const fileData = await fileQuery.saveFile(body)
-              data.photo.push(fileData._id)
-            }
-            if (data.photo.length && data.photo[0].fileName !== body.photo) {
-              const fileData = await fileQuery.saveFile(body)
-              data.photo = fileData._id
-            }
-          }
-
-          Object.keys(body).forEach(async (key) => {
-            if (key !== 'password' && key !== 'photo') {
-              data[key] = body[key]
-            }
-          })
-          return data.save()
-        }
-        return null
-      })
-      .then(resolve)
-      .catch(reject)
-  })
-
 const create = async (body) => {
   const testIfExist = await UserQuery.find({ loginName: body.loginName })
   if (testIfExist.length > 0) {
@@ -127,6 +98,7 @@ async function deletePhoto (fileData) {
 async function personalInfoByStep (req) {
   const { body: dataObject } = req
   const { userNumb, personalInfo, evolution, ...rest } = dataObject
+  console.log(req.user)
 
   let userId = {}
   if (userNumb) {
@@ -207,7 +179,6 @@ module.exports = {
   get,
   getOne,
   create,
-  update,
   remove,
   deleteMany,
   addPhoto,

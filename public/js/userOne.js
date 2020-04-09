@@ -118,18 +118,18 @@ document.addEventListener('click', e => {
     request.send(json)
   }
 })
-
+// add user info
 document.addEventListener('submit', e => {
   e.preventDefault()
-  const allowedForms = ['hobby-form']
+  const allowedForms = ['hobby-form', 'info-form']
   if (allowedForms.indexOf(e.target.id) >= 0) {
     const formData = new FormData(e.target)
     let dataToSend
-    let ReqURL
+    let reqURL
     let evolution = {}
     switch (e.target.id) {
       case 'hobby-form':
-        ReqURL = '/users/evolution/step-1'
+        reqURL = '/users/evolution/step-1'
         evolution = { hobbies: [{ name: '', timeStarted: '', isKeepOnDoing: false }] }
         formData.forEach(function (value, key) {
           if (key === 'isKeepOnDoing') {
@@ -142,11 +142,20 @@ document.addEventListener('submit', e => {
         dataToSend = JSON.stringify(evolution)
         break
 
+      case 'info-form':
+        reqURL = '/users/personal-info/step-1'
+        const info = {}
+        formData.forEach(function (value, key) {
+          info[key] = value
+        })
+        dataToSend = JSON.stringify(info)
+        break
+
       default:
         break
     }
     const request = new XMLHttpRequest()
-    request.open('POST', ReqURL)
+    request.open('POST', reqURL)
     request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
     request.onreadystatechange = function () {
       if (this.readyState === XMLHttpRequest.DONE) {

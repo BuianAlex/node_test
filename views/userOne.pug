@@ -16,33 +16,33 @@ body
           a(href="/text") Text
           a(href="/chat") Chat
           a(href="/users") User list
-  h3(class="header-text")=`${data.loginName}'s pictures`        
+  h3(class="header-text")=`Info user:  ${data.loginName}`        
   div(class="container")        
     section(class="p-50 user-info") 
       header 
         h2 User info
-      form(class="mui-form" id="info-form")
-        -    
-          const filds = [{name:'firstName', dataSource: data.personalInfo.firstName  },
-          {name:'lastName', dataSource: data.personalInfo.lastName}, 
-          {name:'givenName',dataSource: data.personalInfo.givenName},
-          {name:'surname', dataSource: data.personalInfo.surname},
-          {name:'job', dataSource: data.personalInfo.job},
-          {name:'nationality', dataSource: data.personalInfo.nationality}, 
-          {name:'phoneNumber', dataSource: data.personalInfo.phoneNumber},
-          {name: 'homeAddress', dataSource: data.personalInfo.homeAddress},
-          {name: 'city', dataSource: data.personalInfo.city}, 
-          {name: 'postCode',dataSource: data.personalInfo.postCode},  
-          {name:'country',dataSource: data.personalInfo.country}, 
-          {name:'passportStatus',dataSource: data.personalInfo.passportStatus},
-          {name:'passportNumber',dataSource: data.personalInfo.passportNumber}, 
-          {name:'passportExpectedDate',dataSource: data.personalInfo.passportExpectedDate}, 
-          {name:'passportExpiryDate',dataSource: data.personalInfo.passportExpiryDate}     ]
-        each fild in filds
-          div(class="mui-textfield mui-textfield--float-label")
-            input(type="text" name=fild.name value=fild.dataSource )
-            label=fild.name
-        button(type="submit" class="mui-btn mui-btn--raised") Save  
+      form(class="mui-form" id="info-form" class="evolution-form")
+          -
+            const filds = [{name:'firstName', dataSource: data.personalInfo ?  data.personalInfo.firstName : '' },
+              {name:'lastName', dataSource: data.personalInfo ? data.personalInfo.lastName : ''}, 
+              {name:'givenName',dataSource: data.personalInfo ? data.personalInfo.givenName : '' },
+              {name:'surname', dataSource: data.personalInfo ? data.personalInfo.surname : ''},
+              {name:'dob', dataSource: data.personalInfo ? data.personalInfo.job : ''},
+              {name:'nationality', dataSource: data.personalInfo ? data.personalInfo.nationality : ''}, 
+              {name:'phoneNumber', dataSource: data.personalInfo ? data.personalInfo.phoneNumber : ''},
+              {name: 'homeAddress', dataSource: data.personalInfo ? data.personalInfo.homeAddress : ''},
+              {name: 'city', dataSource: data.personalInfo ? data.personalInfo.city : ''}, 
+              {name: 'postCode',dataSource: data.personalInfo ? data.personalInfo.postCode : ''},  
+              {name:'country',dataSource: data.personalInfo ? data.personalInfo.country : ''}, 
+              {name:'passportStatus',dataSource: data.personalInfo ? data.personalInfo.passportStatus : ''},
+              {name:'passportNumber',dataSource: data.personalInfo ? data.personalInfo.passportNumber : ''}, 
+              {name:'passportExpectedDate',dataSource: data.personalInfo ? data.personalInfo.passportExpectedDate : ''}, 
+              {name:'passportExpiryDate',dataSource: data.personalInfo ? data.personalInfo.passportExpiryDate : ''}]
+          each fild in filds
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="text" name=fild.name value=fild.dataSource )
+              label=fild.name
+          button(type="submit" class="mui-btn mui-btn--raised") Save  
     section.p-50    
       header 
         h2 User evolution

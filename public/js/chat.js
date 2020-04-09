@@ -30,6 +30,13 @@ modalContent.innerHTML = `
 document.addEventListener('click', async e => {
   if (e.target.id === 'login' || e.target.id === 'singin') {
     e.preventDefault()
+    const reqData = {
+      loginName: e.target.form.log.value,
+      password: e.target.form.pass.value
+    }
+    if (e.target.id === 'singin') {
+      reqData.isAdmin = e.target.form.is_admin.checked
+    }
     const url = e.target.id === 'login' ? '/users/login' : '/users/create'
     try {
       const response = await fetch(url, {
@@ -37,11 +44,7 @@ document.addEventListener('click', async e => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          loginName: e.target.form.log.value,
-          password: e.target.form.pass.value,
-          isAdmin: e.target.form.is_admin.checked
-        })
+        body: JSON.stringify(reqData)
       })
       if (response.status === 200) {
         body.removeChild(modalWraper)
@@ -60,13 +63,13 @@ document.addEventListener('click', async e => {
 
 modalWraper.appendChild(modalContent)
 
-function appendMessage(msg) {
+function appendMessage (msg) {
   const message = document.createElement('li')
   message.textContent = msg
   document.getElementById('chat').appendChild(message)
 }
 
-function usersBoard(list) {
+function usersBoard (list) {
   const board = document.querySelector('.who-online')
   board.innerHTML = ''
   if (list) {
