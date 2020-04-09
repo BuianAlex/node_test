@@ -23,7 +23,7 @@ const schema = {
       type: 'string',
       minLength: 3
     },
-    userID: {
+    userNumb: {
       type: 'string'
     },
     mime: {
@@ -33,7 +33,7 @@ const schema = {
       type: 'string'
     }
   },
-  required: ['fileName', 'userID', 'type', 'mime'],
+  required: ['fileName', 'userNumb', 'type', 'mime'],
   additionalProperties: true
 }
 

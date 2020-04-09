@@ -22,7 +22,6 @@ body
       header 
         h2 User info
       form(class="mui-form" id="info-form")
-
         -    
           const filds = [{name:'firstName', dataSource: data.personalInfo.firstName  },
           {name:'lastName', dataSource: data.personalInfo.lastName}, 
@@ -48,18 +47,107 @@ body
       header 
         h2 User evolution
       h4 Nobbies
-      div(class="width-two")  
-        
-        div(class="mui-textfield mui-textfield--float-label")
-          input(type="number" name="imgWidth")
-          label name
-        div(class="mui-textfield mui-textfield--float-label")
-          input(type="number" name='imgHeigh')
-          label timeStarted
-        div(class="mui-checkbox")
+      if (data.evolution)
+        ul
+          each hobby in data.evolution.hobbies
+            li
+              div(class="in-line")  
+                div(class="mui-textfield mui-textfield--float-label")
+                  input(type="text" name="hobbieName" value=hobby.name disabled)
+                  label hobbie name
+                div(class="mui-textfield mui-textfield--float-label")
+                  input(type="text" name='timeStarted' value=hobby.timeStarted disabled)
+                  label timeStarted
+                div(class="mui-checkbox")
+                    label
+                      input(type="checkbox" name="isKeepOnDoing" value=hobby.isKeepOnDoing disabled)
+                      span isKeepOnDoing
+      form(action="#" id="hobby-form" class="evolution-form")
+        div(class="in-line")  
+          div(class="mui-textfield mui-textfield--float-label")
+            input(type="text" name="name" value="")
+            label hobbie name
+          div(class="mui-textfield mui-textfield--float-label")
+            input(type="text" name='timeStarted' value="")
+            label timeStarted
+          div(class="mui-checkbox")
+              label
+                input(type="checkbox" name="isKeepOnDoing" value=false checked=false )
+                span isKeepOnDoing  
+          button(type="submit" class="mui-btn mui-btn--raised") ADD                           
+      h4 Courses
+      if (data.evolution)
+        ul
+          each cours in data.evolution.courses
+            li
+              div(class="in-line")  
+                div(class="mui-textfield mui-textfield--float-label")
+                  input(type="text" name="hobbieName" value=cours.name)
+                  label Cours name
+                div(class="mui-textfield mui-textfield--float-label")
+                  input(type="text" name='imgHeigh' value=cours.timeStarted)
+                  label time Started
+                div(class="mui-textfield mui-textfield--float-label")
+                  input(type="text" name='imgHeigh' value=cours.timeEnd)
+                  label time End
+                div(class="mui-checkbox")
+                    label
+                      input(type="checkbox" name="isKeepOnDoing"   checked=cours.isKeepOnDoing)
+                      span isKeepOnDoing
+                div(class="mui-checkbox")
+                    label
+                      input(type="checkbox" name="isKeepOnDoing"   checked=cours.doYouLikeIt)
+                      span doYouLikeIt
+      form(action="" id="course-form" class="evolution-form")
+        div(class="in-line")  
+          div(class="mui-textfield mui-textfield--float-label")
+            input(type="text" name="hobbieName" value="")
+            label Cours name
+          div(class="mui-textfield mui-textfield--float-label")
+            input(type="text" name='imgHeigh' value="")
+            label time Started
+          div(class="mui-textfield mui-textfield--float-label")
+            input(type="text" name='imgHeigh' value="")
+            label time End
+          div(class="mui-checkbox")
             label
-              input(type="checkbox" name="greyscale" value="true" )
-              span isKeepOnDoing     
+              input(type="checkbox" name="isKeepOnDoing"   checked=false)
+              span isKeepOnDoing
+          div(class="mui-checkbox")
+            label
+              input(type="checkbox" name="isKeepOnDoing"   checked=false)
+              span doYouLikeIt  
+          button(type="submit" class="mui-btn mui-btn--raised") ADD                           
+      h4 Skills
+      if (data.evolution)
+        ul
+          each skill in data.evolution.skills
+            li
+              div(class="in-line")  
+                div(class="mui-textfield mui-textfield--float-label")
+                  input(type="text" name="hobbieName" value=skill.name)
+                  label Skill name
+                div(class="in-line")  
+                  div(class="mui-textfield mui-textfield--float-label")
+                    input(type="text" name="hobbieName" value=skill.level)
+                    label Skill level
+                div(class="in-line")  
+                  div(class="mui-textfield mui-textfield--float-label")
+                    input(type="text" name="hobbieName" value=skill.improvements)
+                    label Skill improvements
+      form(action="" id="skills-form" class="evolution-form")
+        div(class="in-line")  
+          div(class="mui-textfield mui-textfield--float-label")
+            input(type="text" name="skillName" value="")
+            label Skill name
+          div(class="mui-textfield mui-textfield--float-label")
+            input(type="text" name="skill-evel" value="")
+            label Skill level
+          div(class="mui-textfield mui-textfield--float-label")
+            input(type="text" name="skill-improve" value="")
+            label Skill improvements
+          button(type="submit" class="mui-btn mui-btn--raised btn-right") ADD       
+ 
 
     section.p-50    
       header 
@@ -75,14 +163,14 @@ body
           div(class="mui-textfield mui-textfield--float-label")
             input(type="text" name="altText")
             label Add alt text
-          div(class="width-two")  
+          div(class="in-line")  
             div(class="mui-textfield mui-textfield--float-label")
               input(type="number" name="imgWidth")
               label Img width
             div(class="mui-textfield mui-textfield--float-label")
               input(type="number" name='imgHeigh')
               label Img heigth
-          div(class="width-two")  
+          div(class="in-line")  
           div(class="mui-textfield mui-textfield--float-label")
             input(type="number" name="quality" )
             label Quality

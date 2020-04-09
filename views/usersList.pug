@@ -16,8 +16,15 @@ body
           a(href="/text") Text
           a(href="/chat") Chat
           a(href="/users") Users list
-  ul(class="user-list")        
-    each user in data.usersList
-      =JSON.stringify(user)
-      li
-        a(href="/users/get-one?id="+user.userNumb)=user.loginName 
+  section(class="mui-container-fluid")        
+    ul(class="user-list")        
+      each user in data.usersList
+        li(class="mui-panel")
+          a( href="/users/get-one?id="+user.userNumb)=user.loginName 
+        
+        li(class="mui-panel")
+          a( href="/users/get-one?id="+user.userNumb)=user.loginName 
+        
+        
+        
+        

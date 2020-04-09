@@ -26,7 +26,7 @@ app.use(
     secret: 'keyboard cat',
     name: 'connect.sid',
     resave: false,
-    cookie: { secure: false },
+    cookie: { secure: true, maxAge: 60000 },
     saveUninitialized: true
   })
 )
@@ -154,6 +154,10 @@ io.on('connection', (socket) => {
 })
 
 app.get('*', (req, res) => {
+  res.status(404).send('Forbidden/Not found')
+})
+
+app.post('*', (req, res) => {
   res.status(404).send('Forbidden/Not found')
 })
 

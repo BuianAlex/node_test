@@ -18,6 +18,7 @@ li {
 } */
 .container {
   display: flex;
+  flex-wrap: wrap;
   padding: 1rem;
 }
 .send-form {
@@ -115,9 +116,25 @@ label {
   position: absolute;
   z-index: -1;
 }
-.user-list li {
-  text-align: center;
-  padding: 1rem;
-  background-color: #fff;
-  margin-bottom: 0.1rem;
+.user-list{
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1rem;
 }
+.user-list li {
+  margin-right: 1%;
+  width: 24.25%;
+  min-width: 200px;
+
+}
+.user-list li:nth-child(4n) {
+  margin-right: 0;
+}
+.user-list li a{
+  text-align: center;
+  display: block;
+  height: 100%;
+  padding: 1rem;
+  background-color: antiquewhite;
+}
+

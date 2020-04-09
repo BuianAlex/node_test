@@ -86,15 +86,6 @@ const remove = (id) => UserQuery.findByIdAndRemove(id)
 
 const deleteMany = (idS) => UserQuery.deleteMany({ userNumb: idS })
 
-function calcObjectValue (holder, kayName, object) {
-  let value = holder[object[kayName]]
-  if (!value) {
-    value = 0
-  }
-  value += 1
-  holder[object[kayName]] = value
-}
-
 async function addPhoto (fileData) {
   const savePath = `img/users/${fileData.userNumb}`
   try {
@@ -200,7 +191,9 @@ async function updateEvolution (req) {
         const resHobbi = await HobbiQuery.insertMany(hobbies)
         const hobbiesIds = resHobbi.map((item) => item.id)
         userEvolution.hobbies.push([...hobbiesIds])
-        return userEvolution.save()
+        userData.evolution = userEvolution._id
+        await userEvolution.save()
+        return userData.save()
       }
     }
   } catch (error) {

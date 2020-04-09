@@ -128,10 +128,13 @@
   top: 0;
   opacity: 0;
 }
-.width-two {
+.in-line {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
 }
-.width-two .mui-textfield:nth-child(1) {
+.in-line .mui-textfield:nth-child(1) {
   margin-right: 0.5rem;
 }
 .with-photo {
@@ -141,4 +144,11 @@
 .with-photo img {
   width: auto;
   height: 100%;
+}
+.evolution-form{
+  border: 1px solid rgba(0,0,0,.26);;
+  padding: 0 0.5rem;
+}
+.btn-right{
+  margin-left: auto;
 }

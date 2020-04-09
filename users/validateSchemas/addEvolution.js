@@ -9,7 +9,7 @@ const schema = {
       items: {
         type: 'object',
         properties: {
-          name: { type: 'string' },
+          name: { type: 'string', minLength: 3 },
           timeStarted: { type: 'string' },
           isKeepOnDoing: { type: 'boolean' }
         },
