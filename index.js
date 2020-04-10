@@ -22,7 +22,12 @@ app.use(compression())
 app.set('views', './views')
 app.set('view engine', 'pug')
 const sessionStore = new RedisStore({ client: redisClient })
+
+if (!fs.existsSync(path.join(__dirname, 'logs'))) {
+  fs.mkdirSync(path.join(__dirname, 'logs'))
+}
 const errorLog = fs.createWriteStream(path.join(__dirname, 'logs/error.log'), { flags: 'a' })
+
 app.use(
   session({
     store: sessionStore,

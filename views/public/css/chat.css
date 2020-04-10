@@ -74,7 +74,7 @@ body {
 }
 .user-name {
   position: relative;
-  padding-left: 5px;
+  padding-left: 10px;
   overflow: hidden;
 }
 .user-name span {

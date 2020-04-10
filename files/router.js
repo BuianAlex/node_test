@@ -1,5 +1,4 @@
 const router = require('express').Router()
-const stream = require('stream')
 const fs = require('fs')
 const path = require('path')
 const FileType = require('file-type')

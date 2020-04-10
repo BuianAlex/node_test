@@ -3,25 +3,25 @@ const mongoose = require('mongoose')
 const filesScheme = mongoose.Schema(
   {
     fileName: {
-      type: String,
+      type: 'string',
       index: true,
       required: true
     },
     size: {
-      type: String
+      type: 'string'
     },
     path: {
-      type: String,
+      type: 'string',
       required: true
     },
     type: {
-      type: String
+      type: 'string'
     },
     mime: {
-      type: String
+      type: 'string'
     },
     altText: {
-      type: String
+      type: 'string'
     }
   },
   { timestamps: true }
