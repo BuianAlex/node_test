@@ -31,8 +31,6 @@ module.exports = function (io) {
         })
       MsgQuery.find({}).then(
         msg => {
-          console.log('ere', msg.length)
-
           msg.forEach(item => {
             io.to(socket.id).emit('chat_message', item)
           })
@@ -57,7 +55,7 @@ module.exports = function (io) {
     socket.on('get_oldest_messages', (range) => {
       MsgQuery.countDocuments({}, function (err, count) {
         if (err) throw err
-        console.log('there are msg', count)
+        // console.log('there are msg', count)
       })
     })
 
