@@ -7,23 +7,30 @@ const modalContent = document.createElement('div')
 modalContent.classList.add('modal-content')
 modalContent.innerHTML = `
   <form class="mui-form" id="user-form">
-  <legend>Welcome</legend>
-  <div class="mui-textfield">
-    <input type="text" name="log">
-    <label>User name</label>
-  </div>
-  <div class="mui-textfield">
-    <input type="password" name="pass">
-    <label>User password</label>
-  </div>
-  <div class="mui-checkbox">
-    <label>
-      <input type="checkbox" name="is_admin" checked>
-      Is admin
-    </label>
-  </div>
-  <button type="submit" id="login" class="mui-btn mui-btn--raised">Login</button>
-  <button type="submit" id="singin" class="mui-btn mui-btn--raised">Singin</button>
+    <ul class="mui-tabs__bar mui-tabs__bar--justified">
+      <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="pane-justified-1">Login</a></li>
+      <li><a data-mui-toggle="tab" data-mui-controls="pane-justified-2">Singin</a></li>
+    </ul>
+    <div class="mui-textfield">
+        <input type="text" name="log">
+        <label>User name</label>
+      </div>
+      <div class="mui-textfield">
+        <input type="password" name="pass">
+        <label>User password</label>
+      </div>
+    <div class="mui-tabs__pane mui--is-active" id="pane-justified-1">
+      <button type="submit" id="login" class="mui-btn mui-btn--primary mui-btn--raised">Login</button>
+    </div>
+    <div class="mui-tabs__pane" id="pane-justified-2">
+      <div class="mui-checkbox">
+        <label>
+          <input type="checkbox" name="is_admin" checked>
+          Is admin
+        </label>
+      </div>
+      <button type="submit" id="singin" class="mui-btn mui-btn--primary mui-btn--raised">Singin</button>
+    </div>
   </form>
 `
 
@@ -64,20 +71,44 @@ document.addEventListener('click', async e => {
 modalWraper.appendChild(modalContent)
 
 function appendMessage (msg) {
+  const { time, name, text } = msg
+  console.log(time, name, text)
+
   const message = document.createElement('li')
-  message.textContent = msg
+
+  if (time) {
+    const timeSpan = document.createElement('span')
+    timeSpan.classList.add('time')
+    timeSpan.textContent = time
+    message.appendChild(timeSpan)
+  }
+
+  if (name) {
+    const nameSpan = document.createElement('span')
+    nameSpan.classList.add('name')
+    nameSpan.textContent = `${name}:`
+    message.appendChild(nameSpan)
+  }
+
+  if (text) {
+    const textSpan = document.createElement('span')
+    textSpan.classList.add('text')
+    textSpan.textContent = text
+    message.appendChild(textSpan)
+  }
   document.getElementById('chat').appendChild(message)
 }
 
 function usersBoard (list) {
   const board = document.querySelector('.who-online')
   board.innerHTML = ''
-  if (list) {
+  if (list.length > 0) {
     const board = document.querySelector('.who-online')
-    Object.keys(list).forEach(item => {
+    list.forEach(item => {
       const user = document.createElement('li')
       user.classList.add('user-name')
-      user.innerHTML = `<span>${list[item].loginName}</span>`
+      user.classList.add(item.onLine ? 'onLine' : 'ofLine')
+      user.innerHTML = `<span>${item.loginName}</span>`
       board.appendChild(user)
     })
   }
@@ -89,6 +120,10 @@ socket.on('people online', data => {
 })
 
 socket.on('disconnect', () => {
+  appendMessage({ time: moment().format('HH:mm:ss'), text: 'Connection lost' })
+})
+
+socket.on('logout', data => {
   body.appendChild(modalWraper)
   fetch('/users/logout')
     .then(response => {
@@ -107,7 +142,7 @@ socket.on('hint', data => {
   appendMessage(data)
 })
 
-socket.on('not_aut', () => {
+socket.on('not_authorized', () => {
   body.appendChild(modalWraper)
 })
 

@@ -1,0 +1,6 @@
+* **URL**
+    / 
+* **Method:**
+    `GET`
+* **Request**
+- home page
