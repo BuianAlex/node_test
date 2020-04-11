@@ -4,6 +4,6 @@ module.exports = (data) => {
     userNumb,
     loginName,
     isAdmin,
-    photo,
+    photo
   }
 }

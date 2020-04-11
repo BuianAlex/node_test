@@ -1,9 +1,11 @@
 const socket = io()
 const body = document.querySelector('body')
 const hintBtn = document.querySelector('.hint')
+const chatContainer = document.getElementById('chat')
 const modalWraper = document.createElement('div')
 modalWraper.classList.add('modal-bg')
 const modalContent = document.createElement('div')
+const range = 40
 modalContent.classList.add('modal-content')
 modalContent.innerHTML = `
   <form class="mui-form" id="user-form">
@@ -57,7 +59,9 @@ document.addEventListener('click', async e => {
         body.removeChild(modalWraper)
         location.reload()
       } else {
-        alert(response.status)
+        const msg = await response.json()
+
+        alert(JSON.stringify(msg))
       }
     } catch (error) {
       console.log(error)
@@ -72,14 +76,12 @@ modalWraper.appendChild(modalContent)
 
 function appendMessage (msg) {
   const { time, name, text } = msg
-  console.log(time, name, text)
-
   const message = document.createElement('li')
 
   if (time) {
     const timeSpan = document.createElement('span')
     timeSpan.classList.add('time')
-    timeSpan.textContent = time
+    timeSpan.textContent = moment(time).format('HH:mm:ss')
     message.appendChild(timeSpan)
   }
 
@@ -96,7 +98,9 @@ function appendMessage (msg) {
     textSpan.textContent = text
     message.appendChild(textSpan)
   }
-  document.getElementById('chat').appendChild(message)
+
+  chatContainer.appendChild(message)
+  chatContainer.scrollTop = chatContainer.scrollHeight
 }
 
 function usersBoard (list) {
@@ -120,7 +124,7 @@ socket.on('people online', data => {
 })
 
 socket.on('disconnect', () => {
-  appendMessage({ time: moment().format('HH:mm:ss'), text: 'Connection lost' })
+  appendMessage({ time: moment(), text: 'Connection lost' })
 })
 
 socket.on('logout', data => {
@@ -153,4 +157,10 @@ document.querySelector('#send-message').addEventListener('submit', e => {
     socket.emit('chat_message', inpMsg.value)
   }
   inpMsg.value = ''
+})
+
+chatContainer.addEventListener('scroll', e => {
+  if (chatContainer.scrollTop === 0) {
+    socket.emit('get_oldest_messages', range)
+  }
 })

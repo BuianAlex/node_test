@@ -1,5 +1,6 @@
 const moment = require('moment')
 const UserQuery = require('./../users/schemas/userSchema')
+const MsgQuery = require('./schemas/message')
 
 module.exports = function (io) {
   const socketsIDs = {}
@@ -28,8 +29,18 @@ module.exports = function (io) {
           })
           io.to('chat_room').emit('people online', usersList)
         })
+      MsgQuery.find({}).then(
+        msg => {
+          console.log('ere', msg.length)
+
+          msg.forEach(item => {
+            io.to(socket.id).emit('chat_message', item)
+          })
+        }
+      ).catch(console.error)
+
       io.to('chat_room').emit(
-        'chat_message', { time: moment().format('HH:mm:ss'), text: `Welcome ${socket.request.user.loginName}` }
+        'chat_message', { time: moment(), text: `Welcome ${socket.request.user.loginName}` }
       )
     }
 
@@ -41,6 +52,13 @@ module.exports = function (io) {
       })
       delete socketsIDs[socket.id]
       io.to('chat_room').emit('people online', usersList)
+    })
+
+    socket.on('get_oldest_messages', (range) => {
+      MsgQuery.countDocuments({}, function (err, count) {
+        if (err) throw err
+        console.log('there are msg', count)
+      })
     })
 
     socket.on('hint', () => {
@@ -55,7 +73,9 @@ module.exports = function (io) {
       // EXIT
       const reg = /(EXIT)(>)/gm
       const exitAction = reg.exec(msg)
+      let hasComand = false
       if (exitAction && exitAction[1] === 'EXIT') {
+        hasComand = true
         io.to(socket.id).emit('logout')
         io.sockets.sockets[socket.id].disconnect(true)
       }
@@ -65,6 +85,7 @@ module.exports = function (io) {
         const adminAction = reg.exec(msg)
 
         if (adminAction) {
+          hasComand = true
           let userSidID = ''
           switch (adminAction[1]) {
             case 'KICK':
@@ -85,10 +106,14 @@ module.exports = function (io) {
           }
         }
       }
-
-      io.to('chat_room')
-        .to()
-        .emit('chat_message', { time: moment().format('HH:mm:ss'), name: socket.request.user.loginName, text: chatMsg })
+      if (!hasComand) {
+        const sendMsg = { time: moment(), name: socket.request.user.loginName, text: chatMsg }
+        new MsgQuery(sendMsg).save().then(() => {
+          io.to('chat_room')
+            .to()
+            .emit('chat_message', sendMsg)
+        }).catch(console.error)
+      }
     })
   })
 }
