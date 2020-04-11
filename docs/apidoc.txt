@@ -1,0 +1,19 @@
+* **URL**
+    /text
+* **Method:**
+    `GET`
+*   **Success Response:**
+Text upload page
+*   **Code:** 200
+*   **Error Response:**
+    **Code:** 404 
+
+* **URL**
+    /text/upload
+* **Method:**
+    `POST`    
+file     
+*   **Success Response:**
+json
+ { dods, whitespace, coma, totalLength, linesCalc: lines.length }
+ *   **Code:** 200 
