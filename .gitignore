@@ -23,5 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 /logs
-/views/public/upload
-/views/public/img/users
+/views/public/uploads/
+/views/public/img/users/
