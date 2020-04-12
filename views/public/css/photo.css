@@ -7,14 +7,19 @@
 }
 .new-img-block {
   display: flex;
+  width: 50%;
+  margin: 0 auto;
+  margin-top: 1rem;
 }
 #img-form {
   overflow: hidden;
+  width: 44%;
 }
 .img-big {
   width: 240px;
   height: 240px;
   background-color: #fff;
+  border: 1px solid #eee;
   margin-right: 1rem;
   text-align: center;
   overflow: hidden;
@@ -24,10 +29,14 @@
   height: auto;
   max-height: 240px;
 }
+.img-prw{
+  width: 100%;
+}
 .img-list {
   display: flex;
   justify-content: left;
   flex-wrap: wrap;
+  width: 100%;
 }
 .img-list li {
   position: relative;
@@ -60,20 +69,27 @@
 }
 .img-delete {
   display: none;
+  padding: 0;
   position: absolute;
   width: 20px;
   height: 20px;
   text-align: center;
-  color: #fff;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%);
   background-color: #f32121;
   border: none;
   border-radius: 50%;
   font-weight: 800;
   outline: none;
   cursor: pointer;
+}
+.img-delete span{
+  display: block;
+  transform: rotate(44deg);
+  margin: 0 auto;
+  line-height: 20px;
+  color: #fff;
 }
 .with-photo::before {
   display: none;
@@ -90,6 +106,14 @@
   border-radius: 50%;
   outline: none;
   cursor: pointer;
+}
+.add-img-form{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.wrap-img-big{
+  width: 44%;
 }
 /* .with-photo::after {
   display: none;
@@ -109,6 +133,9 @@
 .photo-upload {
   overflow: hidden;
 }
+.photo-upload:nth-child(1){
+  border: 1px solid #eee;
+}
 .photo-upload label {
   position: absolute;
   top: 50%;
@@ -116,6 +143,8 @@
   transform: translate(-50%, -50%);
   display: block;
   width: 20px;
+  height: 20px;
+  line-height: 20px;
   text-align: center;
   border-radius: 50%;
   background-color: #2196f3;
@@ -128,6 +157,7 @@
   top: 0;
   opacity: 0;
 }
+
 .in-line {
   display: flex;
   flex-wrap: wrap;
@@ -146,8 +176,11 @@
   height: 100%;
 }
 .evolution-form{
-  border: 1px solid rgba(0,0,0,.26);;
-  padding: 1rem;
+  width: 50%;
+  padding: 2rem;
+  margin: 0 auto;
+  margin-top: 1rem;
+  text-align: left;
 }
 .btn-right{
   margin-left: auto;

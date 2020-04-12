@@ -40,7 +40,6 @@ fileInput.addEventListener('change', e => {
     if (this.readyState === XMLHttpRequest.DONE) {
       if (this.status === 200) {
         const resData = JSON.parse(this.response)
-        console.log(resData.path)
         imgPrw.setAttribute('src', `./../..${resData.path}`)
         imgExt = resData.ext
         mime = resData.mime
@@ -95,7 +94,10 @@ imgForm.addEventListener('submit', e => {
 })
 // delete
 document.addEventListener('click', e => {
+  console.log('sds')
+
   if (e.target.classList.contains('img-delete')) {
+    console.log('sds')
     const imgID = e.target.getAttribute('img-id')
     const json = JSON.stringify({ userID, imgID })
     const img = document.querySelector('.img-list').childNodes

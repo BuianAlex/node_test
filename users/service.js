@@ -4,7 +4,7 @@ const SkillQuery = require('./schemas/skillsSchema')
 const CoursesQuery = require('./schemas/coursesSchema')
 const PersInfoQuery = require('./schemas/persInfoSchema')
 const EvolutionQuery = require('./schemas/evolutionScheme')
-const { saveFile, deleteFile } = require('../files/service')
+const { saveFile, deleteFile } = require('../files/services')
 const normalise = require('./normaliseUserData')
 const HttpError = require('../middleWare/errorMiddleware')
 
