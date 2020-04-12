@@ -79,7 +79,9 @@ async function addPhoto (fileData) {
 
 async function deletePhoto (fileData) {
   try {
-    const user = await UserQuery.findOne({ userNumb: fileData.userNumb })
+    const user = await UserQuery.findOne({ userNumb: fileData.userID })
+    console.log(user, user)
+
     await deleteFile(fileData.imgID)
     const userImages = [...user.photo]
     const restImg = userImages.filter(
