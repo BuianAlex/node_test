@@ -50,108 +50,109 @@ body
               label=fild.name
           button(type="submit" class="mui-btn mui-btn--raised") Save  
       //- evo
-      div( class="mui-tabs__pane " id="pane-api-2") 
-        h4 Nobbies
-        if (data.evolution)
-          ul
-            each hobby in data.evolution.hobbies
-              li
-                div(class="in-line")  
-                  div(class="mui-textfield mui-textfield--float-label")
-                    input(type="text" name="hobbieName" value=hobby.name disabled)
-                    label hobbie name
-                  div(class="mui-textfield mui-textfield--float-label")
-                    input(type="text" name='timeStarted' value=hobby.timeStarted disabled)
-                    label timeStarted
-                  div(class="mui-checkbox")
-                      label
-                        input(type="checkbox" name="isKeepOnDoing" value=hobby.isKeepOnDoing disabled)
-                        span isKeepOnDoing
-        form(action="#" id="hobby-form" class="evolution-form")
-          div(class="in-line")  
-            div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name="name" value="")
-              label hobbie name
-            div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name='timeStarted' value="")
-              label timeStarted
-            div(class="mui-checkbox")
+      div( class="mui-tabs__pane " id="pane-api-2")
+        div(class= "mui-panel evolution-form") 
+          h4 Nobbies
+          if (data.evolution)
+            ul
+              each hobby in data.evolution.hobbies
+                li
+                  div(class="in-line")  
+                    div(class="mui-textfield mui-textfield--float-label")
+                      input(type="text" name="hobbieName" value=hobby.name disabled)
+                      label hobbie name
+                    div(class="mui-textfield mui-textfield--float-label")
+                      input(type="text" name='timeStarted' value=hobby.timeStarted disabled)
+                      label timeStarted
+                    div(class="mui-checkbox")
+                        label
+                          input(type="checkbox" name="isKeepOnDoing" value=hobby.isKeepOnDoing disabled)
+                          span isKeepOnDoing
+          form(action="#" id="hobby-form" class="evolution-form")
+            div(class="in-line")  
+              div(class="mui-textfield mui-textfield--float-label")
+                input(type="text" name="name" value="")
+                label hobbie name
+              div(class="mui-textfield mui-textfield--float-label")
+                input(type="text" name='timeStarted' value="")
+                label timeStarted
+              div(class="mui-checkbox")
+                  label
+                    input(type="checkbox" name="isKeepOnDoing" value=false checked=false )
+                    span isKeepOnDoing  
+              button(type="submit" class="mui-btn mui-btn--raised") ADD                           
+          h4 Courses
+          if (data.evolution)
+            ul
+              each cours in data.evolution.courses
+                li
+                  div(class="in-line")  
+                    div(class="mui-textfield mui-textfield--float-label")
+                      input(type="text" name="hobbieName" value=cours.name)
+                      label Cours name
+                    div(class="mui-textfield mui-textfield--float-label")
+                      input(type="text" name='imgHeigh' value=cours.timeStarted)
+                      label time Started
+                    div(class="mui-textfield mui-textfield--float-label")
+                      input(type="text" name='imgHeigh' value=cours.timeEnd)
+                      label time End
+                    div(class="mui-checkbox")
+                        label
+                          input(type="checkbox" name="isKeepOnDoing"   checked=cours.isKeepOnDoing)
+                          span isKeepOnDoing
+                    div(class="mui-checkbox")
+                        label
+                          input(type="checkbox" name="isKeepOnDoing"   checked=cours.doYouLikeIt)
+                          span doYouLikeIt
+          form(action="" id="course-form" class="evolution-form")
+            div(class="in-line")  
+              div(class="mui-textfield mui-textfield--float-label")
+                input(type="text" name="hobbieName" value="")
+                label Cours name
+              div(class="mui-textfield mui-textfield--float-label")
+                input(type="text" name='imgHeigh' value="")
+                label time Started
+              div(class="mui-textfield mui-textfield--float-label")
+                input(type="text" name='imgHeigh' value="")
+                label time End
+              div(class="mui-checkbox")
                 label
-                  input(type="checkbox" name="isKeepOnDoing" value=false checked=false )
-                  span isKeepOnDoing  
-            button(type="submit" class="mui-btn mui-btn--raised") ADD                           
-        h4 Courses
-        if (data.evolution)
-          ul
-            each cours in data.evolution.courses
-              li
-                div(class="in-line")  
-                  div(class="mui-textfield mui-textfield--float-label")
-                    input(type="text" name="hobbieName" value=cours.name)
-                    label Cours name
-                  div(class="mui-textfield mui-textfield--float-label")
-                    input(type="text" name='imgHeigh' value=cours.timeStarted)
-                    label time Started
-                  div(class="mui-textfield mui-textfield--float-label")
-                    input(type="text" name='imgHeigh' value=cours.timeEnd)
-                    label time End
-                  div(class="mui-checkbox")
-                      label
-                        input(type="checkbox" name="isKeepOnDoing"   checked=cours.isKeepOnDoing)
-                        span isKeepOnDoing
-                  div(class="mui-checkbox")
-                      label
-                        input(type="checkbox" name="isKeepOnDoing"   checked=cours.doYouLikeIt)
-                        span doYouLikeIt
-        form(action="" id="course-form" class="evolution-form")
-          div(class="in-line")  
-            div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name="hobbieName" value="")
-              label Cours name
-            div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name='imgHeigh' value="")
-              label time Started
-            div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name='imgHeigh' value="")
-              label time End
-            div(class="mui-checkbox")
-              label
-                input(type="checkbox" name="isKeepOnDoing"   checked=false)
-                span isKeepOnDoing
-            div(class="mui-checkbox")
-              label
-                input(type="checkbox" name="isKeepOnDoing"   checked=false)
-                span doYouLikeIt  
-            button(type="submit" class="mui-btn mui-btn--raised") ADD                           
-        h4 Skills
-        if (data.evolution)
-          ul
-            each skill in data.evolution.skills
-              li
-                div(class="in-line")  
-                  div(class="mui-textfield mui-textfield--float-label")
-                    input(type="text" name="hobbieName" value=skill.name)
-                    label Skill name
+                  input(type="checkbox" name="isKeepOnDoing"   checked=false)
+                  span isKeepOnDoing
+              div(class="mui-checkbox")
+                label
+                  input(type="checkbox" name="isKeepOnDoing"   checked=false)
+                  span doYouLikeIt  
+              button(type="submit" class="mui-btn mui-btn--raised") ADD                           
+          h4 Skills
+          if (data.evolution)
+            ul
+              each skill in data.evolution.skills
+                li
                   div(class="in-line")  
                     div(class="mui-textfield mui-textfield--float-label")
-                      input(type="text" name="hobbieName" value=skill.level)
-                      label Skill level
-                  div(class="in-line")  
-                    div(class="mui-textfield mui-textfield--float-label")
-                      input(type="text" name="hobbieName" value=skill.improvements)
-                      label Skill improvements
-        form(action="" id="skills-form" class="evolution-form")
-          div(class="in-line")  
-            div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name="skillName" value="")
-              label Skill name
-            div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name="skill-evel" value="")
-              label Skill level
-            div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name="skill-improve" value="")
-              label Skill improvements
-            button(type="submit" class="mui-btn mui-btn--raised btn-right") ADD  
+                      input(type="text" name="hobbieName" value=skill.name)
+                      label Skill name
+                    div(class="in-line")  
+                      div(class="mui-textfield mui-textfield--float-label")
+                        input(type="text" name="hobbieName" value=skill.level)
+                        label Skill level
+                    div(class="in-line")  
+                      div(class="mui-textfield mui-textfield--float-label")
+                        input(type="text" name="hobbieName" value=skill.improvements)
+                        label Skill improvements
+          form(action="" id="skills-form" class="evolution-form")
+            div(class="in-line")  
+              div(class="mui-textfield mui-textfield--float-label")
+                input(type="text" name="skillName" value="")
+                label Skill name
+              div(class="mui-textfield mui-textfield--float-label")
+                input(type="text" name="skill-evel" value="")
+                label Skill level
+              div(class="mui-textfield mui-textfield--float-label")
+                input(type="text" name="skill-improve" value="")
+                label Skill improvements
+              button(type="submit" class="mui-btn mui-btn--raised btn-right") ADD  
       div( class="mui-tabs__pane" id="pane-api-3")
         div(class="evolution-form add-img-form mui-panel")
           div(class="wrap-img-big")         
@@ -181,7 +182,7 @@ body
                 input(type="checkbox" name="greyscale" value="true" )
                 span In greyscale   
             button(type="submit" class="mui-btn mui-btn--raised") Save
-    
+  
 
           div(class="img-prw")
             ul(class="img-list")
@@ -194,10 +195,7 @@ body
                   button(class="img-delete" img-id=photo._id) +
 
 
-    button(class="mui-btn mui-btn--primary" onclick="activateNext();") Next
-
    
-      //- header 
-      //-   h2 User photo
+
       
   script(src="./../../js/userOne.js")                
