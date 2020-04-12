@@ -191,8 +191,7 @@ body
               each photo in data.photo 
                 li(class="with-photo" img-id=photo._id)
                   img(src=`./../${photo.path}/${photo.fileName}`, alt="" id="img-prw")
-                  button(class="img-delete" img-id=photo._id) 
-                    span +
+                  button(class="img-delete" img-id=photo._id) +
 
 
     button(class="mui-btn mui-btn--primary" onclick="activateNext();") Next
