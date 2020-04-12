@@ -4,8 +4,11 @@ const FileType = require('file-type')
 const Jimp = require('jimp')
 const HttpError = require('../middleWare/errorMiddleware')
 const fileQuery = require('./filesScheme')
+const uploadPath = path.join(__dirname, './../views/public/uploads/')
 
-const uploadPath = './../views/public/uploads/'
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath)
+}
 
 const uploadFile = async (req) => {
   const regexp = /filename="(.*)[.]/gi
@@ -19,7 +22,6 @@ const uploadFile = async (req) => {
       ) {
         const write = fs.createWriteStream(
           path.join(
-            __dirname,
             uploadPath,
           `${filename}.${read.fileType.ext}`
           )

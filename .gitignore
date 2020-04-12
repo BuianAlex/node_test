@@ -24,3 +24,4 @@ yarn-error.log*
 
 /logs
 /views/public/upload
+/views/public/img/users
