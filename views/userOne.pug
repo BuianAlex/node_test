@@ -5,7 +5,7 @@ head
   link(href="./../../css/photo.css" rel="stylesheet" type="text/css")
   script(src="/socket.io/socket.io.js")
   script(src="//cdn.muicss.com/mui-0.10.1/js/mui.min.js")
-  title File storage
+  title Personal info
 body
   div(class="mui-appbar")
      table(width="100%")
@@ -16,81 +16,90 @@ body
           a(href="/text") Text
           a(href="/chat") Chat
           a(href="/users") User list
-  h3(class="header-text")=`Info user:  ${data.loginName}`            
-    section
-      ul( class="mui-tabs__bar")  
-        li(class="mui--is-active")
-          a(data-mui-toggle="tab" data-mui-controls="pane-api-1") User info
-        li
-          a(data-mui-toggle="tab" data-mui-controls="pane-api-2") User evolution
-        li
-          a(data-mui-toggle="tab" data-mui-controls="pane-api-3") User photo
+         
+  section
+    h3(class="header-text")=`Info user:  ${data.loginName}`
+    ul( class="mui-tabs__bar")  
+      li(class="mui--is-active")
+        a(data-mui-toggle="tab" data-mui-controls="pane-api-1") Personal info
+      li
+        a(data-mui-toggle="tab" data-mui-controls="pane-api-2") User evolution
+      li
+        a(data-mui-toggle="tab" data-mui-controls="pane-api-3") User photo
 
-      div( class="mui-tabs__pane mui--is-active" id="pane-api-1") 
-        form(class="mui-form" id="info-form" class="mui-panel evolution-form")
-          <ul class="mui-tabs__bar plane-header">
-            <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="step-1">Step-1</a></li>
-            <li><a data-mui-toggle="tab" data-mui-controls="step-2">Step-2</a></li>
-            <li><a data-mui-toggle="tab" data-mui-controls="step-3">Step-3</a></li>
-            <li><a data-mui-toggle="tab" data-mui-controls="step-4">Step-4</a></li>
-            <li><a data-mui-toggle="tab" data-mui-controls="step-5">Step-5</a></li>
-          </ul>  
-          div( class="mui-tabs__pane mui--is-active" id="step-1")
-            -
-              firstStp = [{name:'firstName', dataSource: data.personalInfo ?  data.personalInfo.firstName : '' },
-                {name:'lastName', dataSource: data.personalInfo ? data.personalInfo.lastName : ''}, 
-                {name:'givenName',dataSource: data.personalInfo ? data.personalInfo.givenName : '' },
-                {name:'surname', dataSource: data.personalInfo ? data.personalInfo.surname : ''}]
-            each fild in firstStp
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name=fild.name value=fild.dataSource )
-                label=fild.name
-                
-          div( class="mui-tabs__pane" id="step-2")
-            -
-              secondStp = [{name:'dob', dataSource: data.personalInfo ? data.personalInfo.dob : ''}] 
-            each fild in secondStp
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name=fild.name value=fild.dataSource )
-                label=fild.name 
+    div( class="mui-tabs__pane mui--is-active" id="pane-api-1") 
+      form(class="mui-form" id="info-form" class="mui-panel evolution-form")
+        <ul class="mui-tabs__bar plane-header">
+          <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="step-1">Full Name</a></li>
+          <li><a data-mui-toggle="tab" data-mui-controls="step-2">Day of Birth</a></li>
+          <li><a data-mui-toggle="tab" data-mui-controls="step-3">Nationality</a></li>
+          <li><a data-mui-toggle="tab" data-mui-controls="step-4">contacts</a></li>
+          <li><a data-mui-toggle="tab" data-mui-controls="step-5">Passport Details</a></li>
+        </ul>  
+        div( class="mui-tabs__pane mui--is-active" id="step-1")
+          -
+            firstStp = [{name:'firstName', dataSource: data.personalInfo ?  data.personalInfo.firstName : '' },
+              {name:'lastName', dataSource: data.personalInfo ? data.personalInfo.lastName : ''}, 
+              {name:'givenName',dataSource: data.personalInfo ? data.personalInfo.givenName : '' },
+              {name:'surname', dataSource: data.personalInfo ? data.personalInfo.surname : ''}]
+          each fild in firstStp
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="text" name=fild.name value=fild.dataSource )
+              label=fild.name
+              
+        div( class="mui-tabs__pane" id="step-2")
+          -
+            secondStp = [{name:'dob', dataSource: data.personalInfo ? data.personalInfo.dob : ''}] 
+          each fild in secondStp
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="text" name=fild.name value=fild.dataSource )
+              label=fild.name 
 
-          div( class="mui-tabs__pane" id="step-3") 
-            -
-              thirdStep = [{name:'nationality', dataSource: data.personalInfo ? data.personalInfo.nationality : ''}]
-            each fild in thirdStep
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name=fild.name value=fild.dataSource )
-                label=fild.name
+        div( class="mui-tabs__pane" id="step-3") 
+          -
+            thirdStep = [{name:'nationality', dataSource: data.personalInfo ? data.personalInfo.nationality : ''}]
+          each fild in thirdStep
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="text" name=fild.name value=fild.dataSource )
+              label=fild.name
 
-          div( class="mui-tabs__pane" id="step-4") 
-            -
-              fourthStep = [{name:'phoneNumber', dataSource: data.personalInfo ? data.personalInfo.phoneNumber : ''},
-                {name: 'homeAddress', dataSource: data.personalInfo ? data.personalInfo.homeAddress : ''},
-                {name: 'city', dataSource: data.personalInfo ? data.personalInfo.city : ''}, 
-                {name: 'postCode',dataSource: data.personalInfo ? data.personalInfo.postCode : ''},  
-                {name:'country',dataSource: data.personalInfo ? data.personalInfo.country : ''}]
-            each fild in fourthStep
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name=fild.name value=fild.dataSource )
-                label=fild.name    
+        div( class="mui-tabs__pane" id="step-4") 
+          -
+            fourthStep = [{name:'phoneNumber', dataSource: data.personalInfo ? data.personalInfo.phoneNumber : ''},
+              {name: 'homeAddress', dataSource: data.personalInfo ? data.personalInfo.homeAddress : ''},
+              {name: 'city', dataSource: data.personalInfo ? data.personalInfo.city : ''}, 
+              {name: 'postCode',dataSource: data.personalInfo ? data.personalInfo.postCode : ''},  
+              {name:'country',dataSource: data.personalInfo ? data.personalInfo.country : ''}]
+          each fild in fourthStep
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="text" name=fild.name value=fild.dataSource )
+              label=fild.name    
 
-          div( class="mui-tabs__pane" id="step-5") 
-            -
-              fifthStep = [{name:'passportStatus',dataSource: data.personalInfo ? data.personalInfo.passportStatus : ''},
-              {name:'passportNumber',dataSource: data.personalInfo ? data.personalInfo.passportNumber : ''}, 
-              {name:'passportExpectedDate',dataSource: data.personalInfo ? data.personalInfo.passportExpectedDate : ''}, 
-              {name:'passportExpiryDate',dataSource: data.personalInfo ? data.personalInfo.passportExpiryDate : ''}]
-            each fild in fifthStep
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name=fild.name value=fild.dataSource )
-                label=fild.name    
-          div(class="plane-footer")    
-            button(type="submit" class="mui-btn mui-btn--raised") Save
-            button( class="mui-btn mui-btn--primary" id="next-btn") Next
-      //- evo
-      div( class="mui-tabs__pane " id="pane-api-2")
-        div(class= "mui-panel evolution-form") 
-          h4 Nobbies
+        div( class="mui-tabs__pane" id="step-5") 
+          -
+            fifthStep = [{name:'passportStatus',dataSource: data.personalInfo ? data.personalInfo.passportStatus : ''},
+            {name:'passportNumber',dataSource: data.personalInfo ? data.personalInfo.passportNumber : ''}, 
+            {name:'passportExpectedDate',dataSource: data.personalInfo ? data.personalInfo.passportExpectedDate : ''}, 
+            {name:'passportExpiryDate',dataSource: data.personalInfo ? data.personalInfo.passportExpiryDate : ''}]
+          each fild in fifthStep
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="text" name=fild.name value=fild.dataSource )
+              label=fild.name    
+        div(class="plane-footer")    
+          button(type="submit" class="mui-btn mui-btn--raised") Save
+          button( class="mui-btn mui-btn--primary" id="next-btn") Next
+    //- evo
+    div( class="mui-tabs__pane " id="pane-api-2")
+      div(class= "mui-panel evolution-form") 
+        ul(class="mui-tabs__bar plane-header")
+          li(class="mui--is-active")
+            a(data-mui-toggle="tab" data-mui-controls="hobbies") Hobbies
+          li
+            a(data-mui-toggle="tab" data-mui-controls="courses") Courses
+          li
+            a(data-mui-toggle="tab" data-mui-controls="skills") Skills
+        
+        div( class="mui-tabs__pane  mui--is-active" id="hobbies")
           if (data.evolution)
             ul
               each hobby in data.evolution.hobbies
@@ -106,20 +115,20 @@ body
                         label
                           input(type="checkbox" name="isKeepOnDoing" value=hobby.isKeepOnDoing disabled)
                           span isKeepOnDoing
-          form(action="#" id="hobby-form" class="evolution-form")
-            div(class="in-line")  
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name="name" value="")
-                label hobbie name
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name='timeStarted' value="")
-                label timeStarted
-              div(class="mui-checkbox")
-                  label
-                    input(type="checkbox" name="isKeepOnDoing" value=false checked=false )
-                    span isKeepOnDoing  
-              button(type="submit" class="mui-btn mui-btn--raised") ADD                           
-          h4 Courses
+          form(action="#" id="hobby-form" class="evolution-form") 
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="text" name="name" value="")
+              label hobbie name
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="text" name='timeStarted' value="")
+              label timeStarted
+            div(class="mui-checkbox")
+                label
+                  input(type="checkbox" name="isKeepOnDoing" value=false checked=false )
+                  span isKeepOnDoing  
+            button(type="submit" class="mui-btn mui-btn--raised") ADD  
+
+        div( class="mui-tabs__pane " id="courses")
           if (data.evolution)
             ul
               label Cours name
@@ -137,98 +146,101 @@ body
                   label
                     input(type="checkbox" name="isKeepOnDoing"   checked=cours.doYouLikeIt)
                     span doYouLikeIt
-          form(action="" id="course-form" class="evolution-form")
-            div(class="in-line")  
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name="hobbieName" value="")
-                label Cours name
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name='imgHeigh' value="")
-                label time Started
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name='imgHeigh' value="")
-                label time End
-              div(class="mui-checkbox")
-                label
-                  input(type="checkbox" name="isKeepOnDoing"   checked=false)
-                  span isKeepOnDoing
-              div(class="mui-checkbox")
-                label
-                  input(type="checkbox" name="isKeepOnDoing"   checked=false)
-                  span doYouLikeIt  
-              button(type="submit" class="mui-btn mui-btn--raised") ADD                           
-          h4 Skills
+          form(action="" id="course-form" class="evolution-form") 
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="text" name="hobbieName" value="")
+              label Cours name
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="text" name='imgHeigh' value="")
+              label time Started
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="text" name='imgHeigh' value="")
+              label time End
+            div(class="mui-checkbox")
+              label
+                input(type="checkbox" name="isKeepOnDoing"   checked=false)
+                span isKeepOnDoing
+            div(class="mui-checkbox")
+              label
+                input(type="checkbox" name="isKeepOnDoing"   checked=false)
+                span doYouLikeIt  
+            button(type="submit" class="mui-btn mui-btn--raised") ADD     
+          
+                              
+        div( class="mui-tabs__pane " id="skills")
           if (data.evolution)
             ul
               each skill in data.evolution.skills
                 li
                   div(class="in-line")  
                     div(class="mui-textfield mui-textfield--float-label")
-                      input(type="text" name="hobbieName" value=skill.name)
+                      input(type="text" name="hobbieName" value=skill.name disabled) 
                       label Skill name
                     div(class="in-line")  
                       div(class="mui-textfield mui-textfield--float-label")
-                        input(type="text" name="hobbieName" value=skill.level)
+                        input(type="text" name="hobbieName" value=skill.level disabled)
                         label Skill level
                     div(class="in-line")  
                       div(class="mui-textfield mui-textfield--float-label")
-                        input(type="text" name="hobbieName" value=skill.improvements)
+                        input(type="text" name="hobbieName" value=skill.improvements disabled)
                         label Skill improvements
           form(action="" id="skills-form" class="evolution-form")
-            div(class="in-line")  
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name="skillName" value="")
-                label Skill name
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name="skill-evel" value="")
-                label Skill level
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name="skill-improve" value="")
-                label Skill improvements
-              button(type="submit" class="mui-btn mui-btn--raised btn-right") ADD  
-      div( class="mui-tabs__pane" id="pane-api-3")
-        div(class="evolution-form add-img-form mui-panel")
-          div(class="wrap-img-big")         
-            div(class="img-big")
-              img(src="./../../img/nophoto.png", alt="" id="img-prw")
-          form(class="mui-form" id="img-form")
-            legend(id="form-legend") 
             div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name="newName")
-              label Change file name
+              input(type="text" name="skillName" value="")
+              label Skill name
             div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name="altText")
-              label Add alt text
-            div(class="in-line")  
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="number" name="imgWidth")
-                label Img width
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="number" name='imgHeigh')
-                label Img heigth
-            div(class="in-line")  
+              input(type="text" name="skill-evel" value="")
+              label Skill level
             div(class="mui-textfield mui-textfield--float-label")
-              input(type="number" name="quality" )
-              label Quality
-            div(class="mui-checkbox")
-              label
-                input(type="checkbox" name="greyscale" value="true" )
-                span In greyscale   
-            button(type="submit" class="mui-btn mui-btn--raised") Save
+              input(type="text" name="skill-improve" value="")
+              label Skill improvements
+            button(type="submit" class="mui-btn mui-btn--raised btn-right") ADD 
+        div(class="plane-footer")    
+          button( class="mui-btn mui-btn--primary" id="next-btn-evo") Next     
+    
+    div( class="mui-tabs__pane" id="pane-api-3")
+      div(class="add-img-form mui-panel")
+        div(class="wrap-img-big")         
+          div(class="img-big")
+            img(src="./../../img/nophoto.png", alt="" id="img-prw")
+        form(class="mui-form" id="img-form")
+          legend(id="form-legend") 
+          div(class="mui-textfield mui-textfield--float-label")
+            input(type="text" name="newName")
+            label Change file name
+          div(class="mui-textfield mui-textfield--float-label")
+            input(type="text" name="altText")
+            label Add alt text
+          div(class="in-line")  
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="number" name="imgWidth")
+              label Img width
+            div(class="mui-textfield mui-textfield--float-label")
+              input(type="number" name='imgHeigh')
+              label Img heigth
+          div(class="in-line")  
+          div(class="mui-textfield mui-textfield--float-label")
+            input(type="number" name="quality" )
+            label Quality
+          div(class="mui-checkbox")
+            label
+              input(type="checkbox" name="greyscale" value="true" )
+              span In greyscale   
+          button(type="submit" class="mui-btn mui-btn--raised") Save
+
+
+        div(class="img-prw")
+          ul(class="img-list")
+            li(class="photo-upload") 
+              label(for="uploadPhoto") +  
+              input(type="file" name="fileUpload" id="uploadPhoto" )
+            each photo in data.photo 
+              li(class="with-photo" img-id=photo._id)
+                img(src=`./../${photo.path}/${photo.fileName}`, alt="" id="img-prw")
+                button(class="img-delete" img-id=photo._id) +
+
+
   
-
-          div(class="img-prw")
-            ul(class="img-list")
-              li(class="photo-upload") 
-                label(for="uploadPhoto") +  
-                input(type="file" name="fileUpload" id="uploadPhoto" )
-              each photo in data.photo 
-                li(class="with-photo" img-id=photo._id)
-                  img(src=`./../${photo.path}/${photo.fileName}`, alt="" id="img-prw")
-                  button(class="img-delete" img-id=photo._id) +
-
-
-   
 
       
   script(src="./../../js/userOne.js")                

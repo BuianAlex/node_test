@@ -19,8 +19,10 @@ const io = require('socket.io')(http)
 const initPassport = require('./middleWare/passportConfig')
 const HttpError = require('./middleWare/errorMiddleware')
 app.use(compression())
+
 app.set('views', './views')
 app.set('view engine', 'pug')
+app.locals.basedir = path.join(__dirname, 'views')
 const sessionStore = new RedisStore({ client: redisClient })
 
 if (!fs.existsSync(path.join(__dirname, 'logs'))) {
