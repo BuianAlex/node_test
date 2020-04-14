@@ -187,3 +187,10 @@
 .btn-right{
   margin-left: auto;
 }
+.plane-header{
+  margin-bottom: 1rem;
+}
+.plane-footer{
+  display: flex;
+  justify-content: flex-end;
+}

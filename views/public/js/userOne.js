@@ -1,6 +1,7 @@
 const fileInput = document.getElementById('uploadPhoto')
 const imgPrw = document.getElementById('img-prw')
 const formLegend = document.getElementById('form-legend')
+const nextBtn = document.getElementById('next-btn')
 const imgForm = document.getElementById('img-form')
 const imgList = document.querySelector('.img-list')
 const addHobby = document.getElementById('hobby-form')
@@ -9,6 +10,7 @@ const userID = reg.exec(window.location.search)[1]
 let imgName = ''
 let imgExt = ''
 let mime = ''
+let infoStepName = 'step-1'
 
 function reRenderImgList (resData) {
   const listElement = document.createElement('li')
@@ -84,7 +86,6 @@ imgForm.addEventListener('submit', e => {
         imgExt = ''
         mime = ''
         reRenderImgList(resData)
-        console.log(resData)
       } else {
         alert(this.responseText)
       }
@@ -128,29 +129,44 @@ document.addEventListener('submit', e => {
     const formData = new FormData(e.target)
     let dataToSend
     let reqURL
-    let evolution = {}
+    const evolution = {}
     switch (e.target.id) {
       case 'hobby-form':
-        reqURL = '/users/evolution/step-1'
-        evolution = { hobbies: [{ name: '', timeStarted: '', isKeepOnDoing: false }] }
-        formData.forEach(function (value, key) {
-          if (key === 'isKeepOnDoing') {
-            evolution.hobbies[0][key] = true
-          } else {
-            evolution.hobbies[0][key] = value
-          }
-        })
-        console.log('sds')
-        dataToSend = JSON.stringify(evolution)
+        reqURL = `/users/evolution/${infoStepName}`
+        // evolution = { hobbies: [{ name: '', timeStarted: '', isKeepOnDoing: false }] }
+        // formData.forEach(function (value, key) {
+        //   if (key === 'isKeepOnDoing') {
+        //     evolution.hobbies[0][key] = true
+        //   } else {
+        //     evolution.hobbies[0][key] = value
+        //   }
+        // })
+        // console.log('sds')
+        // dataToSend = JSON.stringify(evolution)
+        console.log(reqURL)
         break
 
       case 'info-form':
-        reqURL = '/users/personal-info/step-1'
+        reqURL = `/users/personal-info/${infoStepName}`
         const info = {}
         formData.forEach(function (value, key) {
           info[key] = value
         })
-        dataToSend = JSON.stringify(info)
+        const {
+          firstName, lastName, givenName, surname,
+          dob,
+          nationality,
+          country, homeAddress, phoneNumber, postCode, city,
+          passportExpectedDate, passportExpiryDate, passportStatus, passportNumber
+        } = info
+        const steps = {
+          'step-1': { firstName, lastName, givenName, surname },
+          'step-2': { dob },
+          'step-3': { nationality },
+          'step-4': { country, homeAddress, postCode, phoneNumber, city },
+          'step-5': { passportExpectedDate, passportExpiryDate, passportStatus, passportNumber }
+        }
+        dataToSend = JSON.stringify(steps[infoStepName])
         break
 
       default:
@@ -172,4 +188,14 @@ document.addEventListener('submit', e => {
     }
     request.send(dataToSend)
   }
+})
+
+// const paneIds = ['pane-api-11', 'pane-api-12', 'pane-api-13', 'pane-api-14', 'pane-api-15']
+const paneIds = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5']
+let currPos = 0
+nextBtn.addEventListener('click', (e) => {
+  e.preventDefault()
+  currPos = (currPos + 1) % paneIds.length
+  infoStepName = paneIds[currPos]
+  mui.tabs.activate(infoStepName)
 })
