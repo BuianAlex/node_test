@@ -146,16 +146,14 @@ document.addEventListener('submit', e => {
             evolution[evoStep][0][key] = value
           }
         })
-        console.log({ [evoStep]: evolution[evoStep] })
-        // dataToSend = JSON.stringify(evolution)
-        console.log(reqURL)
+        dataToSend = JSON.stringify(evolution)
         break
 
       case 'info-form':
         reqURL = `/users/personal-info/${stepName}`
-        const info = {}
+        const persInfo = {}
         formData.forEach(function (value, key) {
-          info[key] = value
+          persInfo[key] = value
         })
         const {
           firstName, lastName, givenName, surname,
@@ -163,7 +161,7 @@ document.addEventListener('submit', e => {
           nationality,
           country, homeAddress, phoneNumber, postCode, city,
           passportExpectedDate, passportExpiryDate, passportStatus, passportNumber
-        } = info
+        } = persInfo
         const steps = {
           'step-1': { firstName, lastName, givenName, surname },
           'step-2': { dob },
@@ -220,11 +218,9 @@ const toggleEls = document.querySelectorAll('[data-mui-controls]')
 function tabsClick (ev) {
   if (paneIds.indexOf(ev.paneId) >= 0) {
     stepName = ev.paneId
-    console.log(stepName)
   }
   if (evoPane.indexOf(ev.paneId) >= 0) {
     evoStep = ev.paneId
-    console.log(evoStep)
   }
 }
 

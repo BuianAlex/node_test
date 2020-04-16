@@ -100,21 +100,20 @@ body
             a(data-mui-toggle="tab" data-mui-controls="skills") Skills
         
         div( class="mui-tabs__pane  mui--is-active" id="hobbies")
-          if (data.evolution)
+          if (data.evolution && data.evolution.hobbies.length >0)
             ul
-              each hobby in data.evolution.hobbies
-                li
-                  div(class="in-line")  
-                    div(class="mui-textfield mui-textfield--float-label")
-                      input(type="text" name="hobbieName" value=hobby.name disabled)
-                      label hobbie name
-                    div(class="mui-textfield mui-textfield--float-label")
-                      input(type="text" name='timeStarted' value=hobby.timeStarted disabled)
-                      label timeStarted
-                    div(class="mui-checkbox")
-                        label
-                          input(type="checkbox" name="isKeepOnDoing" value=hobby.isKeepOnDoing disabled)
-                          span isKeepOnDoing
+              table(class="mui-table mui-table--bordered")
+                thead
+                  tr
+                    th Hobie Name
+                    th Time Started
+                    th Keep On Doing
+                tbody
+                  each hobie in data.evolution.hobbies
+                    tr
+                      td=hobie.name
+                      td=hobie.timeStarted
+                      td=hobie.isKeepOnDoing === "true"?'yes':'no'
           form(action="#" id="hobby-form" class="evolution-form") 
             div(class="mui-textfield mui-textfield--float-label")
               input(type="text" name="name" value="")
@@ -129,23 +128,23 @@ body
             button(type="submit" class="mui-btn mui-btn--raised") ADD  
 
         div( class="mui-tabs__pane " id="courses")
-          if (data.evolution)
-            ul
-              label Cours name
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name='imgHeigh' value=cours.timeStarted)
-                label time Started
-              div(class="mui-textfield mui-textfield--float-label")
-                input(type="text" name='imgHeigh' value=cours.timeEnd)
-                label time End
-              div(class="mui-checkbox")
-                  label
-                    input(type="checkbox" name="isKeepOnDoing"   checked=cours.isKeepOnDoing)
-                    span isKeepOnDoing
-              div(class="mui-checkbox")
-                  label
-                    input(type="checkbox" name="isKeepOnDoing"   checked=cours.doYouLikeIt)
-                    span doYouLikeIt
+          if (data.evolution && data.evolution.courses.length > 0)
+              table(class="mui-table mui-table--bordered")
+                thead
+                  tr
+                    th Course Name
+                    th Time Started
+                    th Time End
+                    th Keep On Doing
+                    th You Like It
+                tbody
+                  each course in data.evolution.courses
+                    tr
+                      td=course.name
+                      td=course.timeStarted
+                      td=course.timeEnd
+                      td=hobie.isKeepOnDoing === "true" ?'yes': 'no'
+                      td=hobie.doYouLikeIt  === "true"?'yes': 'no'
           form(action="" id="course-form" class="evolution-form") 
             div(class="mui-textfield mui-textfield--float-label")
               input(type="text" name="hobbieName" value="")
@@ -168,22 +167,19 @@ body
           
                               
         div( class="mui-tabs__pane " id="skills")
-          if (data.evolution)
-            ul
-              each skill in data.evolution.skills
-                li
-                  div(class="in-line")  
-                    div(class="mui-textfield mui-textfield--float-label")
-                      input(type="text" name="hobbieName" value=skill.name disabled) 
-                      label Skill name
-                    div(class="in-line")  
-                      div(class="mui-textfield mui-textfield--float-label")
-                        input(type="text" name="hobbieName" value=skill.level disabled)
-                        label Skill level
-                    div(class="in-line")  
-                      div(class="mui-textfield mui-textfield--float-label")
-                        input(type="text" name="hobbieName" value=skill.improvements disabled)
-                        label Skill improvements
+          if (data.evolution && data.evolution.skills > 0)
+            table(class="mui-table mui-table--bordered")
+                thead
+                  tr
+                    th Skill name
+                    th Skill level
+                    th Skill improvements
+                tbody
+                  each skill in data.evolution.skills
+                    tr
+                      td=skill.name
+                      td=skill.level
+                      td=skill.improvements
           form(action="" id="skills-form" class="evolution-form")
             div(class="mui-textfield mui-textfield--float-label")
               input(type="text" name="skillName" value="")

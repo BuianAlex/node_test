@@ -187,6 +187,7 @@
   margin: 0 auto;
   margin-top: 1rem;
   text-align: left;
+  border: 1px solid #eee;
 }
 .btn-right{
   margin-left: auto;
