@@ -143,17 +143,17 @@ body
                       td=course.name
                       td=course.timeStarted
                       td=course.timeEnd
-                      td=hobie.isKeepOnDoing === "true" ?'yes': 'no'
-                      td=hobie.doYouLikeIt  === "true"?'yes': 'no'
+                      td=course.isKeepOnDoing === "true" ?'yes': 'no'
+                      td=course.doYouLikeIt  === "true"?'yes': 'no'
           form(action="" id="course-form" class="evolution-form") 
             div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name="hobbieName" value="")
+              input(type="text" name="name" value="")
               label Cours name
             div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name='imgHeigh' value="")
+              input(type="text" name='timeStarted' value="")
               label time Started
             div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name='imgHeigh' value="")
+              input(type="text" name='timeEnd' value="")
               label time End
             div(class="mui-checkbox")
               label
@@ -167,7 +167,7 @@ body
           
                               
         div( class="mui-tabs__pane " id="skills")
-          if (data.evolution && data.evolution.skills > 0)
+          if (data.evolution && data.evolution.skills.length > 0)
             table(class="mui-table mui-table--bordered")
                 thead
                   tr
@@ -176,19 +176,20 @@ body
                     th Skill improvements
                 tbody
                   each skill in data.evolution.skills
+                    
                     tr
                       td=skill.name
                       td=skill.level
                       td=skill.improvements
           form(action="" id="skills-form" class="evolution-form")
             div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name="skillName" value="")
+              input(type="text" name="name" value="")
               label Skill name
             div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name="skill-evel" value="")
+              input(type="text" name="level" value="")
               label Skill level
             div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name="skill-improve" value="")
+              input(type="text" name="improvements" value="")
               label Skill improvements
             button(type="submit" class="mui-btn mui-btn--raised btn-right") ADD 
         div(class="plane-footer")    

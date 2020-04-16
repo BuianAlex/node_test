@@ -80,8 +80,6 @@ async function addPhoto (fileData) {
 async function deletePhoto (fileData) {
   try {
     const user = await UserQuery.findOne({ userNumb: fileData.userID })
-    console.log(user, user)
-
     await deleteFile(fileData.imgID)
     const userImages = [...user.photo]
     const restImg = userImages.filter(
@@ -156,27 +154,61 @@ async function personalInfoByStep (req) {
   }
 }
 
-async function updateEvolution (req) {
-  const userId = req.user.userNumb
-  const { hobbies } = req.body
-  try {
-    if (req.params.step === 'step-1') {
-      const userData = await UserQuery.findOne({ userNumb: userId })
-      const userEvolution = await EvolutionQuery.findOne(userData.evolution) || new EvolutionQuery()
-      if (hobbies && hobbies.length > 0) {
-        const resHobbi = await HobbiQuery.insertMany(hobbies)
-        const hobbiesIds = resHobbi.map((item) => item.id)
-        userEvolution.hobbies.push([...hobbiesIds])
+function SaveEvolution (dataArr, type, userEvolution) {
+  return new Promise((resolve, reject) => {
+    const evolutionTypes = {
+      hobbies: { query: HobbiQuery, page: 'isPage1Complete' },
+      courses: { query: CoursesQuery, page: 'isPage2Complete' },
+      skills: { query: SkillQuery, page: 'isPage3Complete' }
+    }
+    evolutionTypes[type].query.insertMany(dataArr)
+      .then(savedData => {
+        const dataIds = savedData.map((item) => item.id)
+        userEvolution[type].push([...dataIds])
+        userEvolution[evolutionTypes[type].page] = true
+        return resolve()
+      })
+      .catch(reject)
+  })
+}
+
+function addEvolution (req) {
+  return new Promise((resolve, reject) => {
+    const userId = req.user.userNumb
+    const { hobbies, courses, skills } = req.body
+    UserQuery.findOne({ userNumb: userId })
+      .then(async (userData) => {
+        let userEvolution = {}
+        if (userData.evolution) {
+          userEvolution = await EvolutionQuery.findById(userData.evolution)
+        } else {
+          userEvolution = new EvolutionQuery()
+        }
+        if (hobbies && hobbies.length > 0) {
+          await SaveEvolution(hobbies, 'hobbies', userEvolution)
+        }
+        if (courses && courses.length > 0) {
+          await SaveEvolution(courses, 'courses', userEvolution)
+        }
+        if (skills && skills.length > 0) {
+          await SaveEvolution(skills, 'skills', userEvolution)
+        }
+        if (userEvolution.isPage1Complete || userEvolution.isPage2Complete || userEvolution.isPage3Complete) {
+          userEvolution.isSectionStarted = true
+        }
+        if (userEvolution.isPage1Complete && userEvolution.isPage2Complete && userEvolution.isPage3Complete) {
+          userEvolution.isSectionComplete = true
+        }
         userData.evolution = userEvolution._id
         await userEvolution.save()
+        return userData
+      })
+      .then(userData => {
         return userData.save()
-      }
-    }
-  } catch (error) {
-    return new Promise((resolve, reject) => {
-      reject(error)
-    })
-  }
+      })
+      .then(resolve)
+      .catch(reject)
+  })
 }
 
 module.exports = {
@@ -188,5 +220,5 @@ module.exports = {
   addPhoto,
   deletePhoto,
   personalInfoByStep,
-  updateEvolution
+  addEvolution
 }

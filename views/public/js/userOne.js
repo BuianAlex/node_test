@@ -146,7 +146,7 @@ document.addEventListener('submit', e => {
             evolution[evoStep][0][key] = value
           }
         })
-        dataToSend = JSON.stringify(evolution)
+        dataToSend = JSON.stringify({ [evoStep]: evolution[evoStep] })
         break
 
       case 'info-form':
