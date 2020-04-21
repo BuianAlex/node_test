@@ -53,4 +53,33 @@ module.exports = (app, chai) => {
         })
     })
   })
+
+  describe('Test user logout', () => {
+    const authenticatedUser = chai.request.agent(app)
+    before((done) => {
+      authenticatedUser
+        .post('/users/login')
+        .send(queryRight)
+        .end((err, res) => {
+          if (err) console.error(err)
+          res.should.have.status(200)
+          res.should.have.cookie('connect.sid')
+          done()
+        })
+    })
+
+    it('User logout -  200', (done) => {
+      chai
+        .request(app)
+        .get('/users/logout')
+        .end((err, res) => {
+          if (err) console.error(err)
+          res.should.have.status(200)
+          res.body.should.be.a('object')
+          res.body.should.have.property('result')
+          res.body.result.should.be.equal('Bye')
+          done()
+        })
+    })
+  })
 }
