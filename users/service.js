@@ -33,24 +33,17 @@ const getOne = (id) =>
     .catch((err) => ({ status: 0, errorMessage: 'Not found' }))
 
 const create = async (body) => {
-  const testIfExist = await UserQuery.find({ loginName: body.loginName })
-  if (testIfExist.length > 0) {
-    return new Promise((resolve, reject) => {
-      reject(new HttpError('', 409))
-    })
-  }
-  body.registrated = Date.now()
-
-  if (!body.usergroup) {
-    body.usergroup = 'user'
-  }
-
-  const newUser = new UserQuery(body)
   return new Promise((resolve, reject) => {
-    newUser.save((err) => {
-      if (err) return reject(err)
-      resolve()
-      // saved!
+    UserQuery.find({ loginName: body.loginName }, (err, adventure) => {
+      if (err) reject(err)
+      if (adventure.length > 0) {
+        reject(new HttpError('', 409))
+      } else {
+        UserQuery(body).save((err) => {
+          if (err) return reject(err)
+          resolve(true)
+        })
+      }
     })
   })
 }
@@ -172,10 +165,9 @@ function SaveEvolution (dataArr, type, userEvolution) {
   })
 }
 
-function addEvolution (req) {
+function addEvolution (reqBody, userId) {
   return new Promise((resolve, reject) => {
-    const userId = req.user.userNumb
-    const { hobbies, courses, skills } = req.body
+    const { hobbies, courses, skills } = reqBody
     UserQuery.findOne({ userNumb: userId })
       .then(async (userData) => {
         let userEvolution = {}

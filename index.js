@@ -116,16 +116,18 @@ app.use((error, req, res, next) => {
     res.send(error)
   } else {
     const answer = new Error()
-    answer.message = 'Uncaught exeption!'
+    answer.message = 'Uncaught exception!'
     res.status(500).send(answer)
   }
 })
 
 http.listen(
   SERVER_PORT,
-  () =>
-    NODE_ENV === 'dev' &&
-    console.log(`Server listening on port ${SERVER_PORT}!`)
+  () => {
+    if (NODE_ENV === 'dev') {
+      console.log(`Server listening on port ${SERVER_PORT}!`)
+    }
+  }
 )
 
-module.exports = { app, io }
+module.exports = app

@@ -60,16 +60,15 @@ router.get('/get-one', (req, res, next) => {
 
 router.post(
   '/create',
+  validate(validator.create),
   (req, res, next) => {
-    console.log(req.body)
     service
       .create(req.body)
       .then((data) => {
         next()
       })
       .catch((err) => {
-        console.error(err)
-        next(new HttpError('', 400))
+        next(err)
       })
   },
   passport.authenticate('local', { failWithError: true }),
@@ -117,7 +116,7 @@ router.post('/personal-info/:step', checkPermissions.updateByID, validate(valida
 
 router.post('/evolution/:step', checkPermissions.onlyAuthenficated, validate(validator.addEvolution), async (req, res, next) => {
   try {
-    await service.addEvolution(req)
+    await service.addEvolution(req.body, req.user.userNumb)
     res.sendStatus(200)
   } catch (error) {
     next(error)
