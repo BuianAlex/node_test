@@ -48,7 +48,7 @@ app.use(passport.session())
 app.use(express.static(path.join(__dirname, 'views/public')))
 initPassport(passport)
 redisClient.on('error', console.error)
-redisClient.on('ready', () => console.log('redis ok'))
+redisClient.on('ready', () => NODE_ENV === 'dev' && console.log('redis ok'))
 
 app.get('/', (req, res) => {
   res.render('index')

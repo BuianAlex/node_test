@@ -93,7 +93,6 @@ async function deletePhoto (fileData) {
 async function personalInfoByStep (req) {
   const { body: dataObject } = req
   const { userNumb, personalInfo, evolution, ...rest } = dataObject
-  console.log(req.user)
 
   let userId = {}
   if (userNumb) {

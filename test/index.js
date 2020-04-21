@@ -1,0 +1,7 @@
+const chai = require('chai')
+const chaiHttp = require('chai-http')
+const should = chai.should()
+chai.use(chaiHttp)
+const app = require('../index.js')
+require('./signing_test')(app, chai)
+require('./login_logout_test')(app, chai)
