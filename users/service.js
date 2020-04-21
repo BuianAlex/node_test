@@ -197,7 +197,7 @@ function addEvolution (reqBody, userId) {
       .then(userData => {
         return userData.save()
       })
-      .then(resolve)
+      .then(resolve(true))
       .catch(reject)
   })
 }

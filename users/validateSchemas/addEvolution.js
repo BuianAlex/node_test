@@ -21,8 +21,10 @@ const schema = {
       items: {
         type: 'object',
         properties: {
-          name: { type: 'string' },
-          timeStarted: { type: 'string' },
+          name: { type: 'string', minLength: 3 },
+          timeStarted: {
+            type: 'string'
+          },
           timeEnd: { type: 'string' },
           isKeepOnDoing: { type: 'boolean' },
           doYouLikeIt: { type: 'boolean' }
@@ -35,7 +37,7 @@ const schema = {
       items: {
         type: 'object',
         properties: {
-          name: { type: 'string' },
+          name: { type: 'string', minLength: 3 },
           level: { type: 'string' },
           improvements: { type: 'string' }
         }

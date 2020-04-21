@@ -69,8 +69,7 @@ module.exports = (app, chai) => {
     })
 
     it('User logout -  200', (done) => {
-      chai
-        .request(app)
+      authenticatedUser
         .get('/users/logout')
         .end((err, res) => {
           if (err) console.error(err)

@@ -114,13 +114,12 @@ router.post('/personal-info/:step', checkPermissions.updateByID, validate(valida
   }
 })
 
-router.post('/evolution/:step', checkPermissions.onlyAuthenficated, validate(validator.addEvolution), async (req, res, next) => {
-  try {
-    await service.addEvolution(req.body, req.user.userNumb)
-    res.sendStatus(200)
-  } catch (error) {
-    next(error)
-  }
+router.post('/evolution/:step', checkPermissions.onlyAuthenficated, validate(validator.addEvolution), (req, res, next) => {
+  service.addEvolution(req.body, req.user.userNumb)
+    .then(result => {
+      res.send(result)
+    })
+    .catch(next)
 })
 
 module.exports = router
