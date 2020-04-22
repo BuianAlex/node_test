@@ -105,13 +105,12 @@ router.post(
   }
 )
 
-router.post('/personal-info/:step', checkPermissions.updateByID, validate(validator.addPersonalInfo), async (req, res, next) => {
-  try {
-    await service.personalInfoByStep(req)
-    res.sendStatus(200)
-  } catch (error) {
-    next(error)
-  }
+router.post('/personal-info/:step', checkPermissions.updateByID, validate(validator.addPersonalInfo), (req, res, next) => {
+  service.personalInfoByStep(req)
+    .then(result => {
+      res.send(result)
+    })
+    .catch(next)
 })
 
 router.post('/evolution/:step', checkPermissions.onlyAuthenficated, validate(validator.addEvolution), (req, res, next) => {

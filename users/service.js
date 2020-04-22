@@ -1,5 +1,5 @@
 const UserQuery = require('./schemas/userSchema')
-const HobbiQuery = require('./schemas/hobbiesSchema')
+const HobbyQuery = require('./schemas/hobbiesSchema')
 const SkillQuery = require('./schemas/skillsSchema')
 const CoursesQuery = require('./schemas/coursesSchema')
 const PersInfoQuery = require('./schemas/persInfoSchema')
@@ -90,7 +90,29 @@ async function deletePhoto (fileData) {
   }
 }
 
-async function personalInfoByStep (req) {
+function SaveEvolution (dataArr, type, userEvolution) {
+  return new Promise((resolve, reject) => {
+    const evolutionTypes = {
+      hobbies: { query: HobbyQuery, page: 'isPage1Complete' },
+      courses: { query: CoursesQuery, page: 'isPage2Complete' },
+      skills: { query: SkillQuery, page: 'isPage3Complete' }
+    }
+    if (dataArr && dataArr.length > 0) {
+      evolutionTypes[type].query.insertMany(dataArr)
+        .then(savedData => {
+          const dataIds = savedData.map((item) => item.id)
+          userEvolution[type].push([...dataIds])
+          userEvolution[evolutionTypes[type].page] = true
+          return resolve()
+        })
+        .catch(reject)
+    } else {
+      resolve(false)
+    }
+  })
+}
+
+function personalInfoByStep (req) {
   const { body: dataObject } = req
   const { userNumb, personalInfo, evolution, ...rest } = dataObject
 
@@ -100,67 +122,73 @@ async function personalInfoByStep (req) {
   } else {
     userId = req.user.userNumb
   }
-  try {
-    const userData = await UserQuery.findOne({ userNumb: userId })
-    const userInfo = await PersInfoQuery.findOne(userData.personalInfo) || new PersInfoQuery()
-    Object.keys(rest).forEach(key => {
-      userInfo[key] = rest[key]
-    })
-    if (personalInfo) {
-      Object.keys(personalInfo).forEach(key => {
-        userInfo[key] = personalInfo[key]
-      })
-    }
-    await userInfo.save()
-    userData.personalInfo = userInfo._id
-
-    if (evolution) {
-      const userEvolution = await EvolutionQuery.findOne(userData.evolution) || new EvolutionQuery()
-      const { hobbies, courses, skills, ...rest } = evolution
-      if (hobbies) {
-        const resHobbi = await HobbiQuery.insertMany(hobbies)
-        const hobbiesIds = resHobbi.map((item) => item.id)
-        userEvolution.hobbies = [...hobbiesIds]
-      }
-      if (courses) {
-        const resCourses = await CoursesQuery.insertMany(courses)
-        const coursesIds = resCourses.map((item) => item.id)
-        userEvolution.courses = [...coursesIds]
-      }
-      if (skills) {
-        const resSkills = await SkillQuery.insertMany(skills)
-        const skillsIds = resSkills.map((item) => item.id)
-        userEvolution.skills = [...skillsIds]
-      }
-      Object.keys(rest).forEach(key => {
-        userEvolution[key] = rest[key]
-      })
-      await userEvolution.save()
-      userData.evolution = userEvolution._id
-    }
-    return userData.save()
-  } catch (error) {
-    return new Promise((resolve, reject) => {
-      reject(error)
-    })
-  }
-}
-
-function SaveEvolution (dataArr, type, userEvolution) {
   return new Promise((resolve, reject) => {
-    const evolutionTypes = {
-      hobbies: { query: HobbiQuery, page: 'isPage1Complete' },
-      courses: { query: CoursesQuery, page: 'isPage2Complete' },
-      skills: { query: SkillQuery, page: 'isPage3Complete' }
-    }
-    evolutionTypes[type].query.insertMany(dataArr)
-      .then(savedData => {
-        const dataIds = savedData.map((item) => item.id)
-        userEvolution[type].push([...dataIds])
-        userEvolution[evolutionTypes[type].page] = true
-        return resolve()
+    UserQuery.findOne({ userNumb: userId }, (err, user) => {
+      if (err) reject(err)
+      if (!user) reject(err)
+      const persInfo = new Promise((resolve, reject) => {
+        PersInfoQuery.findOne(user.personalInfo, (err, userInfo) => {
+          const steps = {
+            'step-1': 'isPage1Complete',
+            'step-2': 'isPage2Complete',
+            'step-3': 'isPage3Complete',
+            'step-4': 'isPage4Complete',
+            'step-5': 'isPage5Complete'
+          }
+          if (err) reject(err)
+          if (!userInfo) {
+            userInfo = PersInfoQuery()
+          }
+          Object.keys(rest).forEach(key => {
+            userInfo[key] = rest[key]
+          })
+          if (personalInfo) {
+            Object.keys(personalInfo).forEach(key => {
+              userInfo[key] = personalInfo[key]
+            })
+          }
+          userInfo[steps[req.params.step]] = true
+          userInfo.save().then(info => {
+            resolve(userInfo._id)
+          })
+        })
       })
-      .catch(reject)
+      const addEvolution = new Promise((resolve, reject) => {
+        if (evolution) {
+          const { hobbies, courses, skills, ...rest } = evolution
+          EvolutionQuery.findOne(user.evolution, (err, userEvolution) => {
+            if (err) reject(err)
+            if (!userEvolution) {
+              userEvolution = new EvolutionQuery()
+            }
+            const hobbiesPromise = SaveEvolution(hobbies, 'hobbies', userEvolution)
+            const coursesPromise = SaveEvolution(courses, 'courses', userEvolution)
+            const skillsPromise = SaveEvolution(skills, 'skills', userEvolution)
+            Promise.all([hobbiesPromise, coursesPromise, skillsPromise])
+              .then(result => {
+                Object.keys(rest).forEach(key => {
+                  userEvolution[key] = rest[key]
+                })
+                userEvolution.save()
+                  .then(res => {
+                    resolve(userEvolution._id)
+                  })
+              })
+          })
+        } else {
+          resolve(false)
+        }
+      })
+      Promise.all([persInfo, addEvolution]).then(values => {
+        user.personalInfo = values[0]
+        if (values[1]) {
+          user.evolution = values[1]
+        }
+        user.save().then(res => {
+          resolve(true)
+        })
+      })
+    })
   })
 }
 
@@ -168,34 +196,30 @@ function addEvolution (reqBody, userId) {
   return new Promise((resolve, reject) => {
     const { hobbies, courses, skills } = reqBody
     UserQuery.findOne({ userNumb: userId })
-      .then(async (userData) => {
-        let userEvolution = {}
-        if (userData.evolution) {
-          userEvolution = await EvolutionQuery.findById(userData.evolution)
-        } else {
-          userEvolution = new EvolutionQuery()
-        }
-        if (hobbies && hobbies.length > 0) {
-          await SaveEvolution(hobbies, 'hobbies', userEvolution)
-        }
-        if (courses && courses.length > 0) {
-          await SaveEvolution(courses, 'courses', userEvolution)
-        }
-        if (skills && skills.length > 0) {
-          await SaveEvolution(skills, 'skills', userEvolution)
-        }
-        if (userEvolution.isPage1Complete || userEvolution.isPage2Complete || userEvolution.isPage3Complete) {
-          userEvolution.isSectionStarted = true
-        }
-        if (userEvolution.isPage1Complete && userEvolution.isPage2Complete && userEvolution.isPage3Complete) {
-          userEvolution.isSectionComplete = true
-        }
-        userData.evolution = userEvolution._id
-        await userEvolution.save()
-        return userData
-      })
       .then(userData => {
-        return userData.save()
+        return EvolutionQuery.findById(userData.evolution, (err, userEvolution) => {
+          if (err) reject(err)
+          if (!userEvolution) {
+            userEvolution = new EvolutionQuery()
+          }
+          const hobbiesPromise = SaveEvolution(hobbies, 'hobbies', userEvolution)
+          const coursesPromise = SaveEvolution(courses, 'courses', userEvolution)
+          const skillsPromise = SaveEvolution(skills, 'skills', userEvolution)
+          return Promise.all([hobbiesPromise, coursesPromise, skillsPromise])
+            .then(result => {
+              if (userEvolution.isPage1Complete || userEvolution.isPage2Complete || userEvolution.isPage3Complete) {
+                userEvolution.isSectionStarted = true
+              }
+              if (userEvolution.isPage1Complete && userEvolution.isPage2Complete && userEvolution.isPage3Complete) {
+                userEvolution.isSectionComplete = true
+              }
+              return userEvolution.save()
+            })
+            .then(result => {
+              userData.evolution = userEvolution._id
+              return userData.save()
+            })
+        })
       })
       .then(resolve(true))
       .catch(reject)

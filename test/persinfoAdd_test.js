@@ -1,15 +1,17 @@
+const UserQuery = require('./../users/schemas/userSchema')
+const PersInfoQuery = require('./../users/schemas/persInfoSchema')
+const EvolutionQuery = require('./../users/schemas/evolutionScheme')
 const HobbyQuery = require('./../users/schemas/hobbiesSchema')
 const SkillQuery = require('./../users/schemas/skillsSchema')
 const CoursesQuery = require('./../users/schemas/coursesSchema')
+const dataSet = require('./test_data_set')
 module.exports = (app, chai) => {
-  const UserQuery = require('./../users/schemas/userSchema')
-  const EvolutionQuery = require('./../users/schemas/evolutionScheme')
-  describe('Test add user evolution without registration', () => {
+  describe('Test add user personalization info without registration', () => {
     it('without registration -  401', (done) => {
       chai
         .request(app)
-        .post('/users/evolution/step-1')
-        .send({ hobbies: [{ name: '2', timeStarted: '11/03/2020', isKeepOnDoing: true }, { name: 'Eat', timeStarted: '11/03/2020', isKeepOnDoing: true }] })
+        .post('/users/personal-info/step-1')
+        .send({ firstName: 'testfirstname1', surname: 'testfamilyname1', lastName: 'testlastname1' })
         .end((err, res) => {
           if (err) console.error(err)
           res.should.have.status(401)
@@ -19,7 +21,7 @@ module.exports = (app, chai) => {
     })
   })
 
-  describe('Test add user evolution', () => {
+  describe('Test add user personalization info', () => {
     const authenticatedUser = chai.request.agent(app)
     before((done) => {
       authenticatedUser
@@ -35,16 +37,13 @@ module.exports = (app, chai) => {
           done()
         })
     })
-    it('add hobbies  -  200', (done) => {
+    it('add personal info step-1  -  200', (done) => {
       authenticatedUser
-        .post('/users/evolution/step-1')
+        .post('/users/personal-info/step-1')
         .send({
-          hobbies: [
-            {
-              name: 'Survival',
-              timeStarted: '11/03/2020',
-              isKeepOnDoing: true
-            }]
+          firstName: 'testfirstname1',
+          surname: 'testfamilyname1',
+          lastName: 'testlastname1'
         })
         .end((err, res) => {
           if (err) console.error(err)
@@ -53,18 +52,11 @@ module.exports = (app, chai) => {
           done()
         })
     })
-    it('add courses  -  200', (done) => {
+    it('add personal info step-2  -  200', (done) => {
       authenticatedUser
-        .post('/users/evolution/step-2')
+        .post('/users/personal-info/step-2')
         .send({
-          courses: [
-            {
-              name: 'Survival',
-              timeStarted: '11/03/2020',
-              timeEnd: '11/03/2020',
-              isKeepOnDoing: false,
-              doYouLikeIt: false
-            }]
+          dob: '12/12/1900'
         })
         .end((err, res) => {
           if (err) console.error(err)
@@ -73,11 +65,11 @@ module.exports = (app, chai) => {
           done()
         })
     })
-    it('add skills  -  200', (done) => {
+    it('add personal info step-3  -  200', (done) => {
       authenticatedUser
-        .post('/users/evolution/step-3')
+        .post('/users/personal-info/step-3')
         .send({
-          skills: [{ name: 'Greed', level: 'High', improvements: 'More Gold' }]
+          nationality: 'ukrainian'
         })
         .end((err, res) => {
           if (err) console.error(err)
@@ -86,30 +78,49 @@ module.exports = (app, chai) => {
           done()
         })
     })
-    it('add skills incorrect data  -  400', (done) => {
+    it('add personal info step-4  -  200', (done) => {
       authenticatedUser
-        .post('/users/evolution/step-3')
+        .post('/users/personal-info/step-4')
         .send({
-          skills: [
-            {
-              name: '',
-              level: 'h',
-              improvements: 'sa'
-            }]
+          phoneNumber: '345345345435',
+          homeAddress: 'av.Shev',
+          city: 'Cherkasy',
+          postCode: '18000',
+          country: 'Ukraine'
         })
         .end((err, res) => {
           if (err) console.error(err)
-          res.should.have.status(400)
-          res.body.message.should.be.equal('FIELD_VALIDATION')
+          res.should.have.status(200)
+          res.body.should.be.equal(true)
           done()
         })
     })
-
+    it('add personal info big data  -  200', (done) => {
+      authenticatedUser
+        .post('/users/personal-info/step-1')
+        .send(dataSet)
+        .end((err, res) => {
+          if (err) console.error(err)
+          res.should.have.status(200)
+          res.body.should.be.equal(true)
+          done()
+        })
+    })
     after(() => {
       return UserQuery.findOne({ loginName: 'User_test' })
         .then(user => {
+          console.log(user)
+          const ifoClean = new Promise((resolve, reject) => {
+            PersInfoQuery.findByIdAndDelete(user.personalInfo, (err, doc) => {
+              console.log(doc)
+
+              if (err) reject(err)
+              resolve(true)
+            })
+          })
           const evolutionClean = new Promise((resolve, reject) => {
             EvolutionQuery.findByIdAndDelete(user.evolution, (err, doc) => {
+              console.log(doc)
               if (err) reject(err)
               resolve(true)
             })
@@ -136,7 +147,7 @@ module.exports = (app, chai) => {
             })
           })
 
-          return Promise.all([evolutionClean, nobbyClean, skillClean, courseClean])
+          return Promise.all([ifoClean, evolutionClean, nobbyClean, skillClean, courseClean])
             .then(res => {
               user.personalInfo = undefined
               user.evolution = undefined
