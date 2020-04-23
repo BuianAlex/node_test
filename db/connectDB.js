@@ -20,7 +20,7 @@ const { connection } = mongoose
 connection.on('error', console.error.bind(console, 'connection error:'))
 
 connection.once('open', () => {
-  if (NODE_ENV === 'dev' || NODE_ENV === 'test') {
+  if (NODE_ENV === 'dev') {
     console.log(`db  ${dbName} connected!`)
   }
 })

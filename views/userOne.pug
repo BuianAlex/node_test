@@ -12,10 +12,11 @@ body
       tr(style="vertical-align:middle;")
         td( class="mui--appbar-height")
         td(class="mui--appbar-height" align="right")
-          a(href="/") Home
-          a(href="/text") Text
-          a(href="/chat") Chat
-          a(href="/users") User list
+          nav
+            a(href="/") Home
+            a(href="/text") Text
+            a(href="/chat") Chat
+            a(href="/users/get-one" class="active-link") User
          
   section
     h3(class="header-text")=`Info user:  ${data.loginName}`
@@ -52,8 +53,8 @@ body
             secondStp = [{name:'dob', dataSource: data.personalInfo ? data.personalInfo.dob : ''}] 
           each fild in secondStp
             div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name=fild.name value=fild.dataSource )
-              label=fild.name 
+              input(type="date" name=fild.name value=fild.dataSource )
+              //- label=fild.name 
 
         div( class="mui-tabs__pane" id="step-3") 
           -
@@ -77,14 +78,20 @@ body
 
         div( class="mui-tabs__pane" id="step-5") 
           -
-            fifthStep = [{name:'passportStatus',dataSource: data.personalInfo ? data.personalInfo.passportStatus : ''},
-            {name:'passportNumber',dataSource: data.personalInfo ? data.personalInfo.passportNumber : ''}, 
+            fifthStepText = [{name:'passportStatus',dataSource: data.personalInfo ? data.personalInfo.passportStatus : ''},
+            {name:'passportNumber',dataSource: data.personalInfo ? data.personalInfo.passportNumber : ''}]
+          -
+            fifthStepDate = [ 
             {name:'passportExpectedDate',dataSource: data.personalInfo ? data.personalInfo.passportExpectedDate : ''}, 
             {name:'passportExpiryDate',dataSource: data.personalInfo ? data.personalInfo.passportExpiryDate : ''}]
-          each fild in fifthStep
+          each fild in fifthStepText
             div(class="mui-textfield mui-textfield--float-label")
               input(type="text" name=fild.name value=fild.dataSource )
-              label=fild.name    
+              label=fild.name
+          each fild in fifthStepDate    
+            div(class="mui-textfield")
+                input(type="date" name=fild.name value=fild.dataSource )
+                label=fild.name       
         div(class="plane-footer")    
           button(type="submit" class="mui-btn mui-btn--raised") Save
           button( class="mui-btn mui-btn--primary" id="next-btn") Next
@@ -101,25 +108,24 @@ body
         
         div( class="mui-tabs__pane  mui--is-active" id="hobbies")
           if (data.evolution && data.evolution.hobbies.length >0)
-            ul
-              table(class="mui-table mui-table--bordered")
-                thead
+            table(class="mui-table mui-table--bordered")
+              thead
+                tr
+                  th Hobie Name
+                  th Time Started
+                  th Keep On Doing
+              tbody
+                each hobie in data.evolution.hobbies
                   tr
-                    th Hobie Name
-                    th Time Started
-                    th Keep On Doing
-                tbody
-                  each hobie in data.evolution.hobbies
-                    tr
-                      td=hobie.name
-                      td=hobie.timeStarted
-                      td=hobie.isKeepOnDoing === "true"?'yes':'no'
+                    td=hobie.name
+                    td=hobie.timeStarted
+                    td=hobie.isKeepOnDoing === "true"?'yes':'no'
           form(action="#" id="hobby-form" class="evolution-form") 
             div(class="mui-textfield mui-textfield--float-label")
               input(type="text" name="name" value="")
               label hobbie name
-            div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name='timeStarted' value="")
+            div(class="mui-textfield")
+              input(type="date" name='timeStarted' value="")
               label timeStarted
             div(class="mui-checkbox")
                 label
@@ -143,17 +149,17 @@ body
                       td=course.name
                       td=course.timeStarted
                       td=course.timeEnd
-                      td=course.isKeepOnDoing === "true" ?'yes': 'no'
-                      td=course.doYouLikeIt  === "true"?'yes': 'no'
+                      td=course.isKeepOnDoing === true ?'yes': 'no'
+                      td=course.doYouLikeIt  === true?'yes': 'no'
           form(action="" id="course-form" class="evolution-form") 
             div(class="mui-textfield mui-textfield--float-label")
               input(type="text" name="name" value="")
               label Cours name
-            div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name='timeStarted' value="")
+            div(class="mui-textfield")
+              input(type="date" name='timeStarted' value="")
               label time Started
-            div(class="mui-textfield mui-textfield--float-label")
-              input(type="text" name='timeEnd' value="")
+            div(class="mui-textfield")
+              input(type="date" name='timeEnd' value="")
               label time End
             div(class="mui-checkbox")
               label
@@ -161,7 +167,7 @@ body
                 span isKeepOnDoing
             div(class="mui-checkbox")
               label
-                input(type="checkbox" name="isKeepOnDoing"   checked=false)
+                input(type="checkbox" name="doYouLikeIt"   checked=false)
                 span doYouLikeIt  
             button(type="submit" class="mui-btn mui-btn--raised") ADD     
           

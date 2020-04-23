@@ -9,7 +9,6 @@ const validate = (validator, ...args) => (req, res, next) => {
   }
 
   if (!validatorFnc(req.body)) {
-    console.error('validator Error')
     next(new HttpError('FIELD_VALIDATION', 400))
   } else {
     next()

@@ -11,7 +11,7 @@ module.exports = (app, chai) => {
     loginName: 'alex'
   }
 
-  describe('Test the "/login"  rout', () => {
+  describe('Test "/login"  route', () => {
     it('User should be logined -  status 200', done => {
       chai.request(app)
         .post('/users/login')

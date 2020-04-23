@@ -1,20 +1,10 @@
 const LocalStrategy = require('passport-local').Strategy
 const userQuery = require('./../users/schemas/userSchema')
 
-function initialize(passport) {
+function initialize (passport) {
   const authenticateUser = async (username, password, done) => {
-    console.log(username, password)
-
     userQuery
       .findOne({ loginName: username })
-      // .populate("photo")
-      // .then(user => {
-      //   if (user) {
-      //     user.lastVisit = Date.now();
-      //     return user.save();
-      //   }
-      //   return user;
-      // })
       .then(async user => {
         if (!user) {
           return done(null, false)

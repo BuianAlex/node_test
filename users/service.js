@@ -22,17 +22,17 @@ const get = async () => {
   }
 }
 
-const getOne = (id) =>
-  UserQuery.findOne({ userNumb: id })
+function getOne (userNumb) {
+  return UserQuery.findOne({ userNumb: userNumb })
     .populate('photo')
     .populate('evolution')
     .populate('personalInfo')
     .then((data) => {
       return data
     })
-    .catch((err) => ({ status: 0, errorMessage: 'Not found' }))
+}
 
-const create = async (body) => {
+function create (body) {
   return new Promise((resolve, reject) => {
     UserQuery.find({ loginName: body.loginName }, (err, adventure) => {
       if (err) reject(err)

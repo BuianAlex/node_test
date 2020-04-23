@@ -39,23 +39,28 @@ router.get('/', (req, res, next) => {
     })
     .catch(next)
 })
-
-router.get('/get-one', (req, res, next) => {
-  const userID = req.query.id
-  if (/^[0-9]+$/g.test(userID)) {
-    service
-      .getOne(userID)
-      .then((data) => {
-        if (data) {
-          res.render('userOne', { data })
-        } else {
-          next(new HttpError('', 404))
-        }
-      })
-      .catch(next)
+//
+router.get('/get-one', checkPermissions.onlyAuthenficated, (req, res, next) => {
+  let userID
+  if (req.query.id) {
+    if (/^[0-9]+$/g.test(req.query.id)) {
+      userID = req.query.id
+    } else {
+      next(new HttpError('', 400))
+    }
   } else {
-    next(new HttpError('', 404))
+    userID = req.user.userNumb
   }
+  service
+    .getOne(userID)
+    .then((data) => {
+      if (data) {
+        res.render('userOne', { data })
+      } else {
+        next(new HttpError('', 400))
+      }
+    })
+    .catch(next)
 })
 
 router.post(

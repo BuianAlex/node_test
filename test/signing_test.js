@@ -1,7 +1,7 @@
 const UserQuery = require('./../users/schemas/userSchema')
 module.exports = (app, chai) => {
-  describe('Test the /user/create route', () => {
-    it('Signing user - status 200', done => {
+  describe('Test /user/create route', () => {
+    it('Signing user -> status 200', done => {
       chai
         .request(app)
         .post('/users/create')
@@ -18,8 +18,7 @@ module.exports = (app, chai) => {
           done()
         })
     })
-
-    it('LoginName is exist in db - status 409', done => {
+    it('LoginName is exist in db - status 409 (if test starts first time should be fall)', done => {
       chai
         .request(app)
         .post('/users/create')
