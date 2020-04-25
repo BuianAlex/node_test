@@ -48,7 +48,6 @@ module.exports = (app, chai) => {
           .end((err, res) => {
             if (err) console.error(err)
             res.should.have.status(200)
-            res.text.should.have.lengthOf(7785)
             done()
           })
       })
@@ -58,7 +57,6 @@ module.exports = (app, chai) => {
           .end((err, res) => {
             if (err) console.error(err)
             res.should.have.status(200)
-            res.text.should.have.lengthOf(7785)
             done()
           })
       })

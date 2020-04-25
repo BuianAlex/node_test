@@ -5,13 +5,21 @@ const nextBtn = document.getElementById('next-btn')
 const imgForm = document.getElementById('img-form')
 const imgList = document.querySelector('.img-list')
 const addHobby = document.getElementById('hobby-form')
-const reg = /\?id=(\d*)/gm
-const userID = reg.exec(window.location.search)[1]
+
 let imgName = ''
 let imgExt = ''
 let mime = ''
 let stepName = 'step-1'
 let evoStep = 'hobbies'
+
+function getUserId () {
+  const regUserID = /\?id=(\d*)/gm
+  if (window.location.search) {
+    return regUserID.exec(window.location.search)[1]
+  } else {
+    return ''
+  }
+}
 
 function reRenderImgList (resData) {
   const listElement = document.createElement('li')
@@ -69,10 +77,12 @@ imgForm.addEventListener('submit', e => {
     object[key] = value
   })
   object.fileName = imgName
-  object.userNumb = userID
+  object.userNumb = getUserId()
   object.mime = mime
   object.type = imgExt
   const json = JSON.stringify(object)
+  console.log(json)
+
   const request = new XMLHttpRequest()
   request.open('POST', '/users/add-photo')
   request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')

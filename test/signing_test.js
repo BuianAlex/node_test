@@ -24,7 +24,8 @@ module.exports = (app, chai) => {
         .post('/users/create')
         .send({
           loginName: 'User_test',
-          password: '12345q'
+          password: '12345q',
+          isAdmin: true
         })
         .end((err, res) => {
           err && console.log(err)

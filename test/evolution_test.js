@@ -6,7 +6,7 @@ const EvolutionQuery = require('./../users/schemas/evolutionScheme')
 module.exports = (app, chai) => {
   const UserQuery = require('./../users/schemas/userSchema')
   describe('Test /users/evolution/ route', () => {
-    describe('Test add user evolution without registration', () => {
+    describe('Test add user evolution without authentication', () => {
       it('without registration -  401', (done) => {
         chai
           .request(app)

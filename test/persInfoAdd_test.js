@@ -4,7 +4,7 @@ const EvolutionQuery = require('./../users/schemas/evolutionScheme')
 const HobbyQuery = require('./../users/schemas/hobbiesSchema')
 const SkillQuery = require('./../users/schemas/skillsSchema')
 const CoursesQuery = require('./../users/schemas/coursesSchema')
-const dataSet = require('./test_data_set')
+const dataSet = require('./files/test_data_set')
 module.exports = (app, chai) => {
   describe('Test /users/personal-info route', () => {
     describe('add user personal info without authentication', () => {

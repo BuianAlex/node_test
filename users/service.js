@@ -5,21 +5,18 @@ const CoursesQuery = require('./schemas/coursesSchema')
 const PersInfoQuery = require('./schemas/persInfoSchema')
 const EvolutionQuery = require('./schemas/evolutionScheme')
 const { saveFile, deleteFile } = require('../files/services')
-const normalise = require('./normaliseUserData')
+const normalize = require('./normalizeUserData')
 const HttpError = require('../middleWare/errorMiddleware')
 
-const get = async () => {
-  try {
-    const users = await UserQuery.find({}).populate('photo')
-    let usersNormal = []
-    if (users.length) {
-      usersNormal = users.map((item) => normalise(item))
-    }
-    const resultDB = { usersList: usersNormal }
-    return resultDB
-  } catch (error) {
-    console.error(`getUsers${error}`)
-  }
+function getSome () {
+  return UserQuery.find({})
+    .populate('photo')
+    .then(userList => {
+      const result = {
+        usersList: userList.map((item) => normalize(item))
+      }
+      return result
+    })
 }
 
 function getOne (userNumb) {
@@ -52,22 +49,20 @@ const remove = (id) => UserQuery.findByIdAndRemove(id)
 
 const deleteMany = (idS) => UserQuery.deleteMany({ userNumb: idS })
 
-async function addPhoto (fileData) {
-  const savePath = `img/users/${fileData.userNumb}`
-  try {
-    const file = await saveFile(savePath, fileData)
-    const user = await UserQuery.findOne({ userNumb: fileData.userNumb })
-    user.photo.push(file._id)
-    await user.save()
-    return new Promise((resolve, reject) => {
-      resolve(file)
-    })
-  } catch (error) {
-    console.error('serv addPhoto', error)
-    return new Promise((resolve, reject) => {
-      reject(new HttpError(error.message, 400))
-    })
-  }
+function addPhoto (fileData) {
+  return new Promise((resolve, reject) => {
+    UserQuery.findOne({ userNumb: fileData.userNumb })
+      .then(user => {
+        if (!user) reject(new HttpError('', 400))
+        const savePath = `img/users/${fileData.userNumb}`
+        return saveFile(savePath, fileData)
+          .then(file => {
+            user.photo.push(file._id)
+            return user.save().then(res => resolve(file))
+          })
+      })
+      .catch(reject)
+  })
 }
 
 async function deletePhoto (fileData) {
@@ -227,7 +222,7 @@ function addEvolution (reqBody, userId) {
 }
 
 module.exports = {
-  get,
+  getSome,
   getOne,
   create,
   remove,

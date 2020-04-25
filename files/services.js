@@ -65,8 +65,6 @@ const saveFile = (savePath, fileData) => {
             if (fileData.imgWidth || fileData.imgHeigh) {
               const width = parseInt(fileData.imgWidth, 10) || Jimp.AUTO
               const higth = parseInt(fileData.imgHeigh, 10) || Jimp.AUTO
-              console.log('1')
-
               return imgFile
                 .resize(width, higth)
                 .quality(quality)
@@ -76,25 +74,21 @@ const saveFile = (savePath, fileData) => {
           .then(imgFile => {
             if (fileData.quality) {
               const quality = parseInt(fileData.quality, 10) || 100
-              console.log('2')
               return imgFile
                 .quality(quality)
             }
             return imgFile
           })
           .then(imgFile => {
-            console.log('3')
             if (fileData.greyscale) {
               return imgFile.greyscale()
             }
             return imgFile
           })
           .then(imgFile => {
-            console.log('4')
             return imgFile.write(saveFilePath)
           })
           .then(imgFile => {
-            console.log('5')
             resolve(fileQuery.create({
               fileName: nameToSave,
               size: fs.statSync(saveFilePath).size,

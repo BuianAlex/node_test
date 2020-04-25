@@ -33,8 +33,8 @@ const schema = {
       type: 'string'
     }
   },
-  required: ['fileName', 'userNumb', 'type', 'mime'],
-  additionalProperties: true
+  required: ['fileName', 'type', 'mime'],
+  additionalProperties: false
 }
 
 const validate = ajv.compile(schema)

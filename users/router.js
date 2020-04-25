@@ -6,7 +6,7 @@ const checkPermissions = require('../middleWare/permissionsMiddleware')
 const validate = require('../middleWare/validateMiddleware')
 const validator = require('./validator')
 
-const normalize = require('./normaliseUserData')
+const normalize = require('./normalizeUserData')
 
 router.post(
   '/login',
@@ -33,14 +33,14 @@ router.get('/logout', (req, res) => {
 
 router.get('/', (req, res, next) => {
   service
-    .get()
+    .getSome()
     .then((data) => {
       res.render('usersList', { data: data })
     })
     .catch(next)
 })
-//
-router.get('/get-one', checkPermissions.onlyAuthenficated, (req, res, next) => {
+
+router.get('/get-one', checkPermissions.onlyAuthenticated, (req, res, next) => {
   let userID
   if (req.query.id) {
     if (/^[0-9]+$/g.test(req.query.id)) {
@@ -84,15 +84,21 @@ router.post(
 
 router.post(
   '/add-photo',
+  checkPermissions.onlyAuthenticated,
   validate(validator.addPhoto),
-  async (req, res, next) => {
-    try {
-      const result = await service.addPhoto(req.body)
-      res.send(result)
-    } catch (error) {
-      console.error('/add-photo', error)
-      next(new HttpError(error.message, 400))
+  (req, res, next) => {
+    const photoData = req.body
+    if (!photoData.userNumb) {
+      photoData.userNumb = req.user.userNumb
     }
+    service.addPhoto(req.body)
+      .then(result => {
+        res.send(result)
+      })
+      .catch(err => {
+        console.error(err)
+        next(err)
+      })
   }
 )
 
@@ -118,7 +124,7 @@ router.post('/personal-info/:step', checkPermissions.updateByID, validate(valida
     .catch(next)
 })
 
-router.post('/evolution/:step', checkPermissions.onlyAuthenficated, validate(validator.addEvolution), (req, res, next) => {
+router.post('/evolution/:step', checkPermissions.onlyAuthenticated, validate(validator.addEvolution), (req, res, next) => {
   service.addEvolution(req.body, req.user.userNumb)
     .then(result => {
       res.send(result)
