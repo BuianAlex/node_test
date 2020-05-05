@@ -19,8 +19,7 @@ router.post(
   },
   (err, req, res, next) => {
     if (err.status === 401) {
-      err.message = `Sorry, the member name and password
-    you entered do not match. Please try again`
+      err.message = 'FIELD_VALIDATION'
     }
     next(new HttpError(err.message, err.status))
   }
@@ -95,24 +94,20 @@ router.post(
       .then(result => {
         res.send(result)
       })
-      .catch(err => {
-        console.error(err)
-        next(err)
-      })
+      .catch(next)
   }
 )
 
 router.post(
   '/delete-photo',
+  checkPermissions.onlyAuthenticated,
   validate(validator.deletePhoto),
-  async (req, res, next) => {
-    try {
-      const result = await service.deletePhoto(req.body)
-      res.send(result)
-    } catch (error) {
-      console.error('/delete-photo', error)
-      next(new HttpError(error.message, 400))
-    }
+  (req, res, next) => {
+    service.deletePhoto(req)
+      .then(result => {
+        res.send(result)
+      })
+      .catch(next)
   }
 )
 

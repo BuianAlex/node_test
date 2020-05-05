@@ -16,7 +16,7 @@ module.exports = (app, chai) => {
           .end((err, res) => {
             if (err) console.error(err)
             res.should.have.status(401)
-            res.body.message.should.be.equal('Unauthorized')
+            res.text.should.be.equal('Unauthorized')
             done()
           })
       })

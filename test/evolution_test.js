@@ -15,7 +15,7 @@ module.exports = (app, chai) => {
           .end((err, res) => {
             if (err) console.error(err)
             res.should.have.status(401)
-            res.body.message.should.be.equal('Unauthorized')
+            res.text.should.be.equal('Unauthorized')
             done()
           })
       })
@@ -37,7 +37,7 @@ module.exports = (app, chai) => {
             done()
           })
       })
-      it('add hobbies  -  200', (done) => {
+      it('add hobbies -> 200', (done) => {
         authenticatedUser
           .post('/users/evolution/step-1')
           .send({
@@ -55,7 +55,7 @@ module.exports = (app, chai) => {
             done()
           })
       })
-      it('add courses  -  200', (done) => {
+      it('add courses -> 200', (done) => {
         authenticatedUser
           .post('/users/evolution/step-2')
           .send({
@@ -75,7 +75,7 @@ module.exports = (app, chai) => {
             done()
           })
       })
-      it('add skills  -  200', (done) => {
+      it('add skills -> 200', (done) => {
         authenticatedUser
           .post('/users/evolution/step-3')
           .send({
@@ -88,7 +88,7 @@ module.exports = (app, chai) => {
             done()
           })
       })
-      it('add skills incorrect data  -  400', (done) => {
+      it('add skills incorrect data -> 400', (done) => {
         authenticatedUser
           .post('/users/evolution/step-3')
           .send({
@@ -102,7 +102,7 @@ module.exports = (app, chai) => {
           .end((err, res) => {
             if (err) console.error(err)
             res.should.have.status(400)
-            res.body.message.should.be.equal('FIELD_VALIDATION')
+            res.text.should.be.equal('FIELD_VALIDATION')
             done()
           })
       })

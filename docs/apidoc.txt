@@ -17,3 +17,250 @@ file
 json
  { dods, whitespace, coma, totalLength, linesCalc: lines.length }
  *   **Code:** 200 
+
+* **URL** 
+    /users/delete-photo
+* **Method:**
+    `POST`
+* **Data params**
+    {
+        'userNumb': [number]
+        'imgID': [string]
+    }
+* **Sample request json:**
+    {
+        'userNumb': 2
+        'imgID': '5eb113fa32917a5b2e2aa201'
+    }
+*   **Success Response:**
+    *   **Code:** 200 
+
+*   **Error Response:**
+    **Code:** 400
+        json{ message: "FIELD_VALIDATION/FILE_NOT_FOUND” }
+    **Code:** 401
+        json{ message: "Unauthorized”  }
+    **Code:** 403-404
+        json{ message: "Forbidden/Not found” }
+
+* **URL** 
+    /users/add-photo
+* **Method:**
+    `POST`
+* **Data params**
+    {
+        newName: [string],
+        altText: [string],
+        imgWidth: [number]minimum: 0,
+        imgHeigh: [number]minimum: 0,
+        quality: [number] maximum: 100 minimum: 0,
+        greyscale: [boolean],
+        fileName: [string]minLength: 1,
+        userNumb: [string],
+        mime: [string],
+        type: [string],
+    }
+* **Sample request json:**
+    {
+        newName: 'smile',
+        altText: 'smile',
+        imgWidth: 100,
+        imgHeigh: 100,
+        quality: 80,
+        greyscale: true,
+        fileName: file.jpg,
+        userNumb: 0,
+    }
+*   **Success Response:**
+    *   **Code:** 200 
+
+
+*   **Error Response:**
+    **Code:** 400
+        json{ message: "FIELD_VALIDATION/FILE_NOT_FOUND” }
+    **Code:** 401
+        json{ message: "Unauthorized”  }
+    **Code:** 403-404
+        json{ message: "Forbidden/Not found” }
+
+* **URL**
+    /personal-info/step-1
+* **Method:**
+    `POST`
+* **Data params**
+   	`userNumb=[string]`
+    `personalInfo: {
+    givenName: [string],
+    surname: [string],
+    gender: [string],
+    dob: [string],
+    nationality: [string],
+    phoneNumber: [string],
+    homeAddress: [string],
+    city: [string],
+    postCode: [string],
+    country: [string],
+    passportStatus: [string],
+    passportNumber:[string],
+    passportExpectedDate: [string],
+    passportExpiryDate: [string],
+    isSectionStarted: [boolean],
+    isSectionComplete: [boolean],
+    isPage1Complete: [boolean],
+    isPage2Complete: [boolean],
+    isPage3Complete: [boolean],
+    isPage4Complete: [boolean],
+    isPage5Complete: [boolean]
+} `
+    `evolution: {
+        hobbies: [{
+            name: [string],
+            timeStarted: [string],
+            isKeepOnDoing: [boolean]
+        }],
+        courses: [{
+            name: [string]
+            timeStarted: [string],
+            timeEnd: [string],
+            isKeepOnDoing: [boolean],
+            doYouLikeIt: [boolean]
+        }],
+        skills: [{
+            name: [string],
+            level: [string],
+            improvements: [string]
+        }],
+isSectionStarted: [boolean],
+isSectionComplete: [boolean],
+isPage1Complete: [boolean],
+isPage2Complete: [boolean],
+isPage3Complete: [boolean]
+} `
+
+* **Sample request json:**
+
+    ```json
+    {
+        userNumb: "0001232”,
+        personalInfo: {
+        givenName: "testgivenname1",
+        surname: "testfamilyname1”,
+        gender: "Male",
+        dob: "22/11/2004",
+        nationality: "Nicaraguan",
+        phoneNumber: "",
+        homeAddress: "",
+        city: "",
+        postCode: "",
+        country: "",
+        passportStatus: "Yes",
+        passportNumber: "111111",
+        passportExpectedDate: "",
+        passportExpiryDate: "11/11/2020",
+        isSectionStarted: true,
+        isSectionComplete: false,
+        isPage1Complete: true,
+        isPage2Complete: true,
+        isPage3Complete: false,
+        isPage4Complete: true,
+        isPage5Complete: true
+},
+evolution: {
+hobbies: [{
+   name: "Guitar",
+   timeStarted: "11/12/2015",
+   isKeepOnDoing: true
+}],
+courses: [{
+   name: "Quantum poetry",
+   timeStarted: "11/11/2011",
+   timeEnd: "11/11/2031",
+   isKeepOnDoing: true,
+   doYouLikeIt: true
+}],
+skills: [{
+   name: "Greed",
+   level: "High",
+   improvements: "More Gold"
+}],
+isSectionStarted: true,
+isSectionComplete: false,
+isPage1Complete: true,
+isPage2Complete: true,
+isPage3Complete: false
+}
+    }
+    ```
+
+*   **Success Response:**
+    *   **Code:** 200 
+
+*   **Error Response:**
+    **Code:** 401
+```json{ message: "Unauthorized”  } ```
+    **Code:** 403-404
+ ```json{ message: "Forbidden/Not found” } ```
+
+* **URL**
+    /personal-info/step-1
+* **Method:**
+    `POST`
+* **Data params**
+    `username=[string]`
+    `firstName=[string]`
+    `lastName=[string]`
+* **Sample request json:**
+
+    ```json
+        {
+            firstName: "testfirstname1”,
+            familyName: "testfamilyname1",
+            lastName: "testlastname1”
+        }
+    ```
+
+*   **Success Response:**
+    *   **Code:** 200 
+
+*   **Error Response:**
+    **Code:** 400
+    ```json{ message: "FIELD_VALIDATION” }```
+    **Code:** 401
+    ```json{ message: "Unauthorized”  } ```
+    **Code:** 403-404
+    ```json{ message: "Forbidden/Not found” } ```
+
+* **URL**
+    /evolution/step-1
+* **Method:**
+    `POST`
+* **Data params**
+    `hobbies=[{
+        name: [string],
+        timeStarted: [string]
+        isKeepOnDoing: [boolean]
+     }]`
+
+* **Sample request json:**
+
+    ```json
+        {
+        hobbies: [{
+            name: "Survival”,
+            timeStarted: "11/03/2020",
+            isKeepOnDoing: true
+        }]
+    }
+    ```
+
+*   **Success Response:**
+    *   **Code:** 200 
+
+*   **Error Response:**
+    **Code:** 400
+    ```json{ message: "FIELD_VALIDATION” }```
+    **Code:** 401
+    ```json{ message: "Unauthorized”  } ```
+    **Code:** 403-404
+     ```json{ message: "Forbidden/Not found” } ```
+

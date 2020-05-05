@@ -103,7 +103,9 @@ app.post('*', (req, res, next) => {
 })
 
 app.use((error, req, res, next) => {
-  NODE_ENV === 'dev' && console.error('Main error handler', error)
+  if (NODE_ENV === 'dev') {
+    console.error('Main error handler', error)
+  }
   errorLog.write(`${JSON.stringify({
     time: Date.now(),
     url: req.url,
@@ -113,7 +115,7 @@ app.use((error, req, res, next) => {
   })}\n`)
   if (error && error.status) {
     res.status(error.status)
-    res.send(error)
+    res.send(error.message)
   } else {
     const answer = new Error()
     answer.message = 'Uncaught exception!'

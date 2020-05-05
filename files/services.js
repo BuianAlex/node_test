@@ -1,10 +1,11 @@
 const path = require('path')
 const fs = require('fs')
+const util = require('util')
 const FileType = require('file-type')
 const Jimp = require('jimp')
 const HttpError = require('../middleWare/errorMiddleware')
 const fileQuery = require('./filesScheme')
-
+const unlink = util.promisify(fs.unlink)
 const uploadPath = './../views/public/uploads/'
 
 const uploadFile = async (req) => {
@@ -39,35 +40,33 @@ const uploadFile = async (req) => {
   })
 }
 
-const saveFile = (savePath, fileData) => {
-  const uplodedFilePath = path.join(
+function saveFile (savePath, fileData) {
+  const uploadedFilePath = path.join(
     __dirname,
     './../views/public/uploads/',
     fileData.fileName
   )
+  const fileExt = path.extname(uploadedFilePath)
   const nameToSave = fileData.newName
-    ? `${fileData.newName}.${fileData.type}`
+    ? fileData.newName + fileExt
     : fileData.fileName
   const saveFilePath = path.join(
     __dirname,
     `./../views/public/${savePath}/`,
     nameToSave
   )
-
   return new Promise((resolve, reject) => {
     if (fs.existsSync(saveFilePath)) {
-      reject(new HttpError(`file with name ${nameToSave} exist already `, 400))
+      reject(new HttpError('FIELD_VALIDATION', 400))
     } else {
-      if (fs.existsSync(uplodedFilePath)) {
-        const quality = fileData.quality ? parseInt(fileData.quality, 10) : 100
-        return Jimp.read(uplodedFilePath)
+      if (fs.existsSync(uploadedFilePath)) {
+        return Jimp.read(uploadedFilePath)
           .then(imgFile => {
             if (fileData.imgWidth || fileData.imgHeigh) {
               const width = parseInt(fileData.imgWidth, 10) || Jimp.AUTO
               const higth = parseInt(fileData.imgHeigh, 10) || Jimp.AUTO
               return imgFile
                 .resize(width, higth)
-                .quality(quality)
             }
             return imgFile
           })
@@ -86,15 +85,15 @@ const saveFile = (savePath, fileData) => {
             return imgFile
           })
           .then(imgFile => {
-            return imgFile.write(saveFilePath)
+            return imgFile.writeAsync(saveFilePath)
           })
           .then(imgFile => {
             resolve(fileQuery.create({
               fileName: nameToSave,
               size: fs.statSync(saveFilePath).size,
               path: savePath,
-              type: fileData.fileExt,
-              mime: fileData.mime,
+              type: fileExt,
+              mime: imgFile.getMIME(),
               altText: fileData.altText
             }))
           })
@@ -106,32 +105,30 @@ const saveFile = (savePath, fileData) => {
   })
 }
 
-async function deleteFile (fileID) {
-  try {
-    const file = await fileQuery.findOne({ _id: fileID })
-    const filePath = path.join(
-      __dirname,
+function deleteFile (fileID) {
+  return new Promise((resolve, reject) => {
+    fileQuery.findOne({ _id: fileID })
+      .then(file => {
+        if (!file) return reject(new HttpError('FIELD_VALIDATION', 400, 'id not found'))
+
+        const filePath = path.join(
+          __dirname,
       `./../views/public/${file.path}/`,
       file.fileName
-    )
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath) // delere file from file sys
-      await file.remove() // delere file from db
-      return new Promise((resolve, reject) => {
-        resolve(true)
+        )
+        return unlink(filePath)
+          .then(result => {
+            file.remove()
+              .then(result => {
+                return resolve(true)
+              })
+          })
+          .catch(error => {
+            reject(new HttpError('FILE_NOT_FOUND', 400, error))
+          })
       })
-    } else {
-      console.error('deleteFile', 'File not found on the fileSys')
-      return new Promise((resolve, reject) => {
-        reject(new HttpError('File not found on the fileSys', 400))
-      })
-    }
-  } catch (error) {
-    console.error('deleteFile', error)
-    return new Promise((resolve, reject) => {
-      reject(new HttpError(error.message, 400))
-    })
-  }
+      .catch(reject)
+  })
 }
 
 module.exports = {

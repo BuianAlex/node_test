@@ -9,15 +9,15 @@ const addHobby = document.getElementById('hobby-form')
 let imgName = ''
 let imgExt = ''
 let mime = ''
-let stepName = 'step-1'
-let evoStep = 'hobbies'
+// let stepName = 'step-1'
+// let evoStep = 'hobbies'
 
 function getUserId () {
   const regUserID = /\?id=(\d*)/gm
   if (window.location.search) {
     return regUserID.exec(window.location.search)[1]
   } else {
-    return ''
+    return undefined
   }
 }
 
@@ -73,13 +73,20 @@ imgForm.addEventListener('submit', e => {
   e.preventDefault()
   const data = new FormData(e.target)
   const object = {}
-  data.forEach(function (value, key) {
-    object[key] = value
+  data.forEach((value, key) => {
+    if (value !== '') {
+      const numberFild = ['quality', 'imgWidth', 'imgHeigh']
+      if (numberFild.indexOf(key) >= 0) {
+        object[key] = parseInt(value, 10)
+      } else if (key === 'greyscale') {
+        object.greyscale = true
+      } else {
+        object[key] = value
+      }
+    }
   })
   object.fileName = imgName
   object.userNumb = getUserId()
-  object.mime = mime
-  object.type = imgExt
   const json = JSON.stringify(object)
   console.log(json)
 
@@ -107,8 +114,13 @@ imgForm.addEventListener('submit', e => {
 // delete
 document.addEventListener('click', e => {
   if (e.target.classList.contains('img-delete')) {
+    const dataToSend = {}
     const imgID = e.target.getAttribute('img-id')
-    const json = JSON.stringify({ userID, imgID })
+    dataToSend.imgID = imgID
+    const userNumb = getUserId()
+    if (userNumb) {
+      dataToSend.userNumb = userNumb
+    }
     const img = document.querySelector('.img-list').childNodes
     const request = new XMLHttpRequest()
     request.open('POST', '/users/delete-photo')
@@ -126,7 +138,7 @@ document.addEventListener('click', e => {
         }
       }
     }
-    request.send(json)
+    request.send(JSON.stringify(dataToSend))
   }
 })
 // add user info
@@ -203,34 +215,53 @@ document.addEventListener('submit', e => {
   }
 })
 
-const paneIds = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5']
+let evoStep = 'hobbies'
 const evoPane = ['hobbies', 'courses', 'skills']
 let evoPos = 0
+function evolutionSteps () {
+  evoPos = (evoPos + 1) % evoPane.length
+  evoStep = evoPane[evoPos]
+  mui.tabs.activate(evoStep)
+}
+
+let stepName = 'step-1'
+const paneIds = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5']
 let currPos = 0
+function persInfoStep () {
+  currPos = (currPos + 1) % paneIds.length
+  stepName = paneIds[currPos]
+  mui.tabs.activate(stepName)
+}
+
+// const paneIds = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5']
+// const evoPane = ['hobbies', 'courses', 'skills']
+// let evoPos = 0
+// const currPos = 0
 
 document.getElementById('next-btn-evo').addEventListener('click', (e) => {
   e.preventDefault()
-  evoPos = (evoPos + 1) % evoPane.length
-  evoStep = evoPane[evoPos]
-  console.log(evoStep)
-  mui.tabs.activate(evoStep)
+  evolutionSteps()
+  // evoPos = (evoPos + 1) % evoPane.length
+  // evoStep = evoPane[evoPos]
+  // console.log(evoStep)const evoPane = ['hobbies', 'courses', 'skills']
 })
 
 nextBtn.addEventListener('click', (e) => {
   e.preventDefault()
-  currPos = (currPos + 1) % paneIds.length
-  stepName = paneIds[currPos]
-  mui.tabs.activate(stepName)
+  persInfoStep()
+  // currPos = (currPos + 1) % paneIds.length
+  // stepName = paneIds[currPos]
+  // mui.tabs.activate(stepName)
 })
 
 const toggleEls = document.querySelectorAll('[data-mui-controls]')
 
 function tabsClick (ev) {
   if (paneIds.indexOf(ev.paneId) >= 0) {
-    stepName = ev.paneId
+    currPos = paneIds.indexOf(ev.paneId)
   }
   if (evoPane.indexOf(ev.paneId) >= 0) {
-    evoStep = ev.paneId
+    evoPos = evoPane.indexOf(ev.paneId)
   }
 }
 

@@ -33,8 +33,7 @@ module.exports = (app, chai) => {
         .end((err, res) => {
           if (err) console.error(err)
           res.should.have.status(401)
-          res.body.should.be.a('object')
-          res.body.should.have.property('message')
+          res.text.should.be.equal('FIELD_VALIDATION')
           done()
         })
     })
@@ -47,8 +46,7 @@ module.exports = (app, chai) => {
         .end((err, res) => {
           if (err) console.error(err)
           res.should.have.status(400)
-          res.body.should.be.a('object')
-          res.body.should.have.property('message')
+          res.text.should.be.equal('FIELD_VALIDATION')
           done()
         })
     })

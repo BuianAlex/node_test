@@ -1,3 +1,8 @@
+// const chai = require('chai')
+// const chaiHttp = require('chai-http')
+// const should = chai.should()
+// chai.use(chaiHttp)
+// const app = require('../index.js')
 const UserQuery = require('./../users/schemas/userSchema')
 module.exports = (app, chai) => {
   describe('Test /user/create route', () => {
@@ -30,7 +35,7 @@ module.exports = (app, chai) => {
         .end((err, res) => {
           err && console.log(err)
           res.should.have.status(409)
-          res.body.message.should.eql('Conflict')
+          res.text.should.eql('Conflict')
           done()
         })
     })
@@ -46,7 +51,7 @@ module.exports = (app, chai) => {
         .end((err, res) => {
           err && console.log(err)
           res.should.have.status(400)
-          res.body.message.should.eql('FIELD_VALIDATION')
+          res.text.should.eql('FIELD_VALIDATION')
           done()
         })
     })
@@ -62,7 +67,7 @@ module.exports = (app, chai) => {
         .end((err, res) => {
           err && console.log(err)
           res.should.have.status(400)
-          res.body.message.should.eql('FIELD_VALIDATION')
+          res.text.should.eql('FIELD_VALIDATION')
           done()
         })
     })
@@ -78,7 +83,7 @@ module.exports = (app, chai) => {
         .end((err, res) => {
           err && console.log(err)
           res.should.have.status(400)
-          res.body.message.should.eql('FIELD_VALIDATION')
+          res.text.should.eql('FIELD_VALIDATION')
           done()
         })
     })
@@ -94,7 +99,7 @@ module.exports = (app, chai) => {
         .end((err, res) => {
           err && console.log(err)
           res.should.have.status(400)
-          res.body.message.should.eql('FIELD_VALIDATION')
+          res.text.should.eql('FIELD_VALIDATION')
           done()
         })
     })

@@ -65,24 +65,29 @@ function addPhoto (fileData) {
   })
 }
 
-async function deletePhoto (fileData) {
-  try {
-    const user = await UserQuery.findOne({ userNumb: fileData.userID })
-    await deleteFile(fileData.imgID)
-    const userImages = [...user.photo]
-    const restImg = userImages.filter(
-      (img) => img._id.toString() !== fileData.imgID
-    )
-    user.photo = restImg
-    await user.save()
-    return new Promise((resolve, reject) => {
-      resolve(true)
-    })
-  } catch (error) {
-    return new Promise((resolve, reject) => {
-      reject(new HttpError(error.message, 400))
-    })
+function deletePhoto (req) {
+  let { userNumb, imgID } = req.body
+  if (!userNumb) {
+    userNumb = req.user.userNumb
   }
+  return new Promise((resolve, reject) => {
+    UserQuery.findOne({ userNumb: userNumb })
+      .then(user => {
+        if (!user) return reject(new HttpError('FIELD_VALIDATION', 400))
+        return deleteFile(imgID)
+          .then(result => {
+            const userImages = [...user.photo]
+            const restImg = userImages.filter(
+              (img) => img._id.toString() !== imgID
+            )
+            user.photo = restImg
+            return user.save().then(result => {
+              resolve({ result: true })
+            })
+          })
+      })
+      .catch(reject)
+  })
 }
 
 function SaveEvolution (dataArr, type, userEvolution) {
