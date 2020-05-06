@@ -7,10 +7,6 @@ const imgList = document.querySelector('.img-list')
 const addHobby = document.getElementById('hobby-form')
 
 let imgName = ''
-let imgExt = ''
-let mime = ''
-// let stepName = 'step-1'
-// let evoStep = 'hobbies'
 
 function getUserId () {
   const regUserID = /\?id=(\d*)/gm
@@ -52,8 +48,6 @@ fileInput.addEventListener('change', e => {
       if (this.status === 200) {
         const resData = JSON.parse(this.response)
         imgPrw.setAttribute('src', `./../..${resData.path}`)
-        imgExt = resData.ext
-        mime = resData.mime
         formLegend.innerText = `File name: ${file.name}`
       } else {
         alert(this.statusText)
@@ -63,7 +57,6 @@ fileInput.addEventListener('change', e => {
   request.upload.onprogress = function (event) {
     if (event.lengthComputable) {
       const progress = Math.floor((10000 * event.loaded) / event.total) / 10000
-      console.log(Math.floor(progress * 100) + '%')
     }
   }
   request.send(file)
@@ -88,7 +81,6 @@ imgForm.addEventListener('submit', e => {
   object.fileName = imgName
   object.userNumb = getUserId()
   const json = JSON.stringify(object)
-  console.log(json)
 
   const request = new XMLHttpRequest()
   request.open('POST', '/users/add-photo')
@@ -141,6 +133,51 @@ document.addEventListener('click', e => {
     request.send(JSON.stringify(dataToSend))
   }
 })
+
+let evoStep = 'hobbies'
+const evoPane = ['hobbies', 'courses', 'skills']
+let evoPos = 0
+function evolutionSteps () {
+  evoPos = (evoPos + 1) % evoPane.length
+  evoStep = evoPane[evoPos]
+  mui.tabs.activate(evoStep)
+}
+
+let stepName = 'step-1'
+const paneIds = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5']
+let currPos = 0
+function persInfoStep () {
+  currPos = (currPos + 1) % paneIds.length
+  stepName = paneIds[currPos]
+  mui.tabs.activate(stepName)
+}
+
+document.getElementById('next-btn-evo').addEventListener('click', (e) => {
+  e.preventDefault()
+  evolutionSteps()
+})
+
+nextBtn.addEventListener('click', (e) => {
+  e.preventDefault()
+  persInfoStep()
+})
+
+const toggleEls = document.querySelectorAll('[data-mui-controls]')
+
+function tabsClick (ev) {
+  if (paneIds.indexOf(ev.paneId) >= 0) {
+    currPos = paneIds.indexOf(ev.paneId)
+    stepName = paneIds[currPos]
+  }
+  if (evoPane.indexOf(ev.paneId) >= 0) {
+    evoPos = evoPane.indexOf(ev.paneId)
+    evoStep = evoPane[evoPos]
+  }
+}
+
+for (var i = 0; i < toggleEls.length; i++) {
+  toggleEls[i].addEventListener('mui.tabs.showend', tabsClick)
+}
 // add user info
 document.addEventListener('submit', e => {
   e.preventDefault()
@@ -205,7 +242,6 @@ document.addEventListener('submit', e => {
         if (this.status === 200) {
           addHobby.reset()
           // location.reload()
-          console.log(this.response)
         } else {
           alert(this.responseText)
         }
@@ -214,57 +250,3 @@ document.addEventListener('submit', e => {
     request.send(dataToSend)
   }
 })
-
-let evoStep = 'hobbies'
-const evoPane = ['hobbies', 'courses', 'skills']
-let evoPos = 0
-function evolutionSteps () {
-  evoPos = (evoPos + 1) % evoPane.length
-  evoStep = evoPane[evoPos]
-  mui.tabs.activate(evoStep)
-}
-
-let stepName = 'step-1'
-const paneIds = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5']
-let currPos = 0
-function persInfoStep () {
-  currPos = (currPos + 1) % paneIds.length
-  stepName = paneIds[currPos]
-  mui.tabs.activate(stepName)
-}
-
-// const paneIds = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5']
-// const evoPane = ['hobbies', 'courses', 'skills']
-// let evoPos = 0
-// const currPos = 0
-
-document.getElementById('next-btn-evo').addEventListener('click', (e) => {
-  e.preventDefault()
-  evolutionSteps()
-  // evoPos = (evoPos + 1) % evoPane.length
-  // evoStep = evoPane[evoPos]
-  // console.log(evoStep)const evoPane = ['hobbies', 'courses', 'skills']
-})
-
-nextBtn.addEventListener('click', (e) => {
-  e.preventDefault()
-  persInfoStep()
-  // currPos = (currPos + 1) % paneIds.length
-  // stepName = paneIds[currPos]
-  // mui.tabs.activate(stepName)
-})
-
-const toggleEls = document.querySelectorAll('[data-mui-controls]')
-
-function tabsClick (ev) {
-  if (paneIds.indexOf(ev.paneId) >= 0) {
-    currPos = paneIds.indexOf(ev.paneId)
-  }
-  if (evoPane.indexOf(ev.paneId) >= 0) {
-    evoPos = evoPane.indexOf(ev.paneId)
-  }
-}
-
-for (var i = 0; i < toggleEls.length; i++) {
-  toggleEls[i].addEventListener('mui.tabs.showend', tabsClick)
-}

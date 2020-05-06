@@ -23,6 +23,24 @@ module.exports = (app, chai) => {
     describe('add photo  user authenticated', () => {
       const authenticatedUser = chai.request.agent(app)
       let user
+      beforeEach(function (done) {
+        const inFile = fs.createReadStream(path.join(
+          __dirname,
+          './files/unnamed.jpg'
+        ))
+        const outFile = fs.createWriteStream(path.join(
+          __dirname,
+          './../views/public/uploads/unnamed.jpg'
+        ))
+        inFile.pipe(outFile)
+        outFile.on('error', (err) => {
+          console.log(err)
+        })
+        outFile.on('close', function () {
+          done()
+        })
+      })
+
       before((done) => {
         authenticatedUser
           .post('/users/login')
@@ -33,24 +51,9 @@ module.exports = (app, chai) => {
           .end((err, res) => {
             if (err) console.error(err)
             user = res.body.result
-            const inFile = fs.createReadStream(path.join(
-              __dirname,
-              './files/unnamed.jpg'
-            ))
-            const outFile = fs.createWriteStream(path.join(
-              __dirname,
-              './../views/public/uploads/unnamed.jpg'
-            ))
-            inFile.pipe(outFile)
-
-            outFile.on('error', (err) => {
-              console.log(err)
-            })
-            outFile.on('close', function () {
-              res.should.have.status(200)
-              res.should.have.cookie('connect.sid')
-              done()
-            })
+            res.should.have.status(200)
+            res.should.have.cookie('connect.sid')
+            done()
           })
       })
       it('add photo with minimum required parameters (fileName) -> 200', (done) => {

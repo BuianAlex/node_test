@@ -71,9 +71,9 @@ module.exports = function (io) {
       // EXIT
       const reg = /(EXIT)(>)/gm
       const exitAction = reg.exec(msg)
-      let hasComand = false
+      let hasCommand = false
       if (exitAction && exitAction[1] === 'EXIT') {
-        hasComand = true
+        hasCommand = true
         io.to(socket.id).emit('logout')
         io.sockets.sockets[socket.id].disconnect(true)
       }
@@ -83,7 +83,7 @@ module.exports = function (io) {
         const adminAction = reg.exec(msg)
 
         if (adminAction) {
-          hasComand = true
+          hasCommand = true
           let userSidID = ''
           switch (adminAction[1]) {
             case 'KICK':
@@ -104,7 +104,7 @@ module.exports = function (io) {
           }
         }
       }
-      if (!hasComand) {
+      if (!hasCommand) {
         const sendMsg = { time: moment(), name: socket.request.user.loginName, text: chatMsg }
         new MsgQuery(sendMsg).save().then(() => {
           io.to('chat_room')

@@ -12,7 +12,7 @@ function uploadFile (req) {
   const regexp = /filename="(.*)[.]/gi
   const filename = regexp.exec(req.headers['content-disposition'])[1]
   return new Promise((resolve, reject) => {
-    return FileType.stream(req).then(read => {
+    FileType.stream(req).then(read => {
       if (
         read.fileType &&
             (read.fileType.ext === 'png' ||
@@ -59,7 +59,7 @@ function saveFile (savePath, fileData) {
       reject(new HttpError('FIELD_VALIDATION', 400))
     } else {
       if (fs.existsSync(uploadedFilePath)) {
-        return Jimp.read(uploadedFilePath)
+        Jimp.read(uploadedFilePath)
           .then(imgFile => {
             if (fileData.imgWidth || fileData.imgHeigh) {
               const width = parseInt(fileData.imgWidth, 10) || Jimp.AUTO
@@ -87,6 +87,7 @@ function saveFile (savePath, fileData) {
             return imgFile.writeAsync(saveFilePath)
           })
           .then(imgFile => {
+            fs.unlinkSync(uploadedFilePath)
             resolve(fileQuery.create({
               fileName: nameToSave,
               size: fs.statSync(saveFilePath).size,
