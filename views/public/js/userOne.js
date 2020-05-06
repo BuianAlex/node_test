@@ -48,8 +48,6 @@ fileInput.addEventListener('change', e => {
       if (this.status === 200) {
         const resData = JSON.parse(this.response)
         imgPrw.setAttribute('src', `./../..${resData.path}`)
-        imgExt = resData.ext
-        mime = resData.mime
         formLegend.innerText = `File name: ${file.name}`
       } else {
         alert(this.statusText)
