@@ -8,7 +8,7 @@ const fileQuery = require('./filesScheme')
 const unlink = util.promisify(fs.unlink)
 const uploadPath = './../views/public/uploads/'
 
-const uploadFile = async (req) => {
+function uploadFile (req) {
   const regexp = /filename="(.*)[.]/gi
   const filename = regexp.exec(req.headers['content-disposition'])[1]
   return new Promise((resolve, reject) => {

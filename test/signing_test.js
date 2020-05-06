@@ -1,8 +1,3 @@
-// const chai = require('chai')
-// const chaiHttp = require('chai-http')
-// const should = chai.should()
-// chai.use(chaiHttp)
-// const app = require('../index.js')
 const UserQuery = require('./../users/schemas/userSchema')
 module.exports = (app, chai) => {
   describe('Test /user/create route', () => {
