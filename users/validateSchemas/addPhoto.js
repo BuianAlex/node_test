@@ -11,30 +11,31 @@ const schema = {
       type: 'string'
     },
     imgWidth: {
-      type: 'string'
+      type: 'number',
+      minimum: 0
     },
     imgHeigh: {
-      type: 'string'
+      type: 'number',
+      minimum: 0
     },
     quality: {
-      type: 'string'
+      type: 'number',
+      maximum: 100,
+      minimum: 0
+    },
+    greyscale: {
+      type: 'boolean'
     },
     fileName: {
       type: 'string',
-      minLength: 3
+      minLength: 1
     },
     userNumb: {
       type: 'string'
-    },
-    mime: {
-      type: 'string'
-    },
-    type: {
-      type: 'string'
     }
   },
-  required: ['fileName', 'userNumb', 'type', 'mime'],
-  additionalProperties: true
+  required: ['fileName'],
+  additionalProperties: false
 }
 
 const validate = ajv.compile(schema)

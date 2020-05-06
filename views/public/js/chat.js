@@ -28,7 +28,7 @@ modalContent.innerHTML = `
       <div class="mui-checkbox">
         <label>
           <input type="checkbox" name="is_admin" checked>
-          Is admin
+          Admin
         </label>
       </div>
       <button type="submit" id="singin" class="mui-btn mui-btn--primary mui-btn--raised">Singin</button>

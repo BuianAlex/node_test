@@ -4,15 +4,15 @@ require('ajv-keywords')(ajv)
 const schema = {
   type: 'object',
   properties: {
-    userID: {
-      type: 'string'
+    userNumb: {
+      type: 'number'
     },
     imgID: {
       type: 'string'
     }
   },
-  required: ['imgID', 'userID'],
-  additionalProperties: true
+  required: ['imgID'],
+  additionalProperties: false
 }
 
 const validate = ajv.compile(schema)

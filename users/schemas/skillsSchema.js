@@ -1,19 +1,19 @@
 const mongoose = require('mongoose')
-const skilsSchema = mongoose.Schema(
+const schema = mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: true
     },
     level: {
-      type: String,
+      type: String
     },
     improvements: {
-      type: String,
-    },
+      type: String
+    }
   },
   { timestamps: true }
 )
 
-const SkilsQuery = mongoose.model('skils', skilsSchema)
-module.exports = SkilsQuery
+const SkillsQuery = mongoose.model('skills', schema)
+module.exports = SkillsQuery

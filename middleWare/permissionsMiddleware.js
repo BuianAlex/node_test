@@ -1,6 +1,6 @@
 const HttpError = require('./errorMiddleware')
 
-const onlyAuthenficated = (req, res, next) => {
+const onlyAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next()
   } else {
@@ -32,8 +32,8 @@ const updateByID = (req, res, next) => {
   if (userNumb) {
     onlyAdmin(req, res, next)
   } else {
-    onlyAuthenficated(req, res, next)
+    onlyAuthenticated(req, res, next)
   }
 }
 
-module.exports = { onlyAdmin, userCreate, onlyAuthenficated, updateByID }
+module.exports = { onlyAdmin, userCreate, onlyAuthenticated, updateByID }

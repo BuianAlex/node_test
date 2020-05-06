@@ -16,7 +16,7 @@ const schema = mongoose.Schema({
     }
   ],
   skills: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'skils', autopopulate: true }
+    { type: mongoose.Schema.Types.ObjectId, ref: 'skills', autopopulate: true }
   ],
   isSectionStarted: {
     type: Boolean

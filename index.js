@@ -19,8 +19,10 @@ const io = require('socket.io')(http)
 const initPassport = require('./middleWare/passportConfig')
 const HttpError = require('./middleWare/errorMiddleware')
 app.use(compression())
+
 app.set('views', './views')
 app.set('view engine', 'pug')
+app.locals.basedir = path.join(__dirname, 'views')
 const sessionStore = new RedisStore({ client: redisClient })
 
 if (!fs.existsSync(path.join(__dirname, 'logs'))) {
@@ -46,7 +48,7 @@ app.use(passport.session())
 app.use(express.static(path.join(__dirname, 'views/public')))
 initPassport(passport)
 redisClient.on('error', console.error)
-redisClient.on('ready', () => console.log('redis ok'))
+redisClient.on('ready', () => NODE_ENV === 'dev' && console.log('redis ok'))
 
 app.get('/', (req, res) => {
   res.render('index')
@@ -101,7 +103,9 @@ app.post('*', (req, res, next) => {
 })
 
 app.use((error, req, res, next) => {
-  NODE_ENV === 'dev' && console.error('Main error handler', error)
+  if (NODE_ENV === 'dev') {
+    console.error('Main error handler', error)
+  }
   errorLog.write(`${JSON.stringify({
     time: Date.now(),
     url: req.url,
@@ -111,19 +115,21 @@ app.use((error, req, res, next) => {
   })}\n`)
   if (error && error.status) {
     res.status(error.status)
-    res.send(error)
+    res.send(error.message)
   } else {
     const answer = new Error()
-    answer.message = 'Uncaught exeption!'
+    answer.message = 'Uncaught exception!'
     res.status(500).send(answer)
   }
 })
 
 http.listen(
   SERVER_PORT,
-  () =>
-    NODE_ENV === 'dev' &&
-    console.log(`Server listening on port ${SERVER_PORT}!`)
+  () => {
+    if (NODE_ENV === 'dev') {
+      console.log(`Server listening on port ${SERVER_PORT}!`)
+    }
+  }
 )
 
-module.exports = { app, io }
+module.exports = app

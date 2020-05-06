@@ -1,14 +1,25 @@
 const fileInput = document.getElementById('uploadPhoto')
 const imgPrw = document.getElementById('img-prw')
 const formLegend = document.getElementById('form-legend')
+const nextBtn = document.getElementById('next-btn')
 const imgForm = document.getElementById('img-form')
 const imgList = document.querySelector('.img-list')
 const addHobby = document.getElementById('hobby-form')
-const reg = /\?id=(\d*)/gm
-const userID = reg.exec(window.location.search)[1]
+
 let imgName = ''
 let imgExt = ''
 let mime = ''
+// let stepName = 'step-1'
+// let evoStep = 'hobbies'
+
+function getUserId () {
+  const regUserID = /\?id=(\d*)/gm
+  if (window.location.search) {
+    return regUserID.exec(window.location.search)[1]
+  } else {
+    return undefined
+  }
+}
 
 function reRenderImgList (resData) {
   const listElement = document.createElement('li')
@@ -62,14 +73,23 @@ imgForm.addEventListener('submit', e => {
   e.preventDefault()
   const data = new FormData(e.target)
   const object = {}
-  data.forEach(function (value, key) {
-    object[key] = value
+  data.forEach((value, key) => {
+    if (value !== '') {
+      const numberFild = ['quality', 'imgWidth', 'imgHeigh']
+      if (numberFild.indexOf(key) >= 0) {
+        object[key] = parseInt(value, 10)
+      } else if (key === 'greyscale') {
+        object.greyscale = true
+      } else {
+        object[key] = value
+      }
+    }
   })
   object.fileName = imgName
-  object.userNumb = userID
-  object.mime = mime
-  object.type = imgExt
+  object.userNumb = getUserId()
   const json = JSON.stringify(object)
+  console.log(json)
+
   const request = new XMLHttpRequest()
   request.open('POST', '/users/add-photo')
   request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
@@ -84,7 +104,6 @@ imgForm.addEventListener('submit', e => {
         imgExt = ''
         mime = ''
         reRenderImgList(resData)
-        console.log(resData)
       } else {
         alert(this.responseText)
       }
@@ -94,12 +113,14 @@ imgForm.addEventListener('submit', e => {
 })
 // delete
 document.addEventListener('click', e => {
-  console.log(e.target)
-
   if (e.target.classList.contains('img-delete')) {
-    console.log('sds')
+    const dataToSend = {}
     const imgID = e.target.getAttribute('img-id')
-    const json = JSON.stringify({ userID, imgID })
+    dataToSend.imgID = imgID
+    const userNumb = getUserId()
+    if (userNumb) {
+      dataToSend.userNumb = userNumb
+    }
     const img = document.querySelector('.img-list').childNodes
     const request = new XMLHttpRequest()
     request.open('POST', '/users/delete-photo')
@@ -117,40 +138,60 @@ document.addEventListener('click', e => {
         }
       }
     }
-    request.send(json)
+    request.send(JSON.stringify(dataToSend))
   }
 })
 // add user info
 document.addEventListener('submit', e => {
   e.preventDefault()
-  const allowedForms = ['hobby-form', 'info-form']
+  const allowedForms = ['hobby-form', 'info-form', 'course-form', 'skills-form']
   if (allowedForms.indexOf(e.target.id) >= 0) {
     const formData = new FormData(e.target)
     let dataToSend
     let reqURL
-    let evolution = {}
+    const urlEvo = { hobbies: 'step-1', courses: 'step-2', skills: 'step-3' }
+    const evolution = {
+      hobbies: [{ name: '', timeStarted: '', isKeepOnDoing: false }],
+      courses: [{ name: '', timeStarted: '', timeEnd: '', isKeepOnDoing: false, doYouLikeIt: false }],
+      skills: [{ name: '', level: '', improvements: '' }]
+    }
     switch (e.target.id) {
-      case 'hobby-form':
-        reqURL = '/users/evolution/step-1'
-        evolution = { hobbies: [{ name: '', timeStarted: '', isKeepOnDoing: false }] }
+      case 'skills-form':
+      case 'course-form':
+      case 'hobby-form' :
+        reqURL = `/users/evolution/${urlEvo[evoStep]}`
+
         formData.forEach(function (value, key) {
-          if (key === 'isKeepOnDoing') {
-            evolution.hobbies[0][key] = true
+          if (key === 'isKeepOnDoing' || key === 'doYouLikeIt') {
+            evolution[evoStep][0][key] = true
           } else {
-            evolution.hobbies[0][key] = value
+            evolution[evoStep][0][key] = value
           }
         })
-        console.log('sds')
-        dataToSend = JSON.stringify(evolution)
+        dataToSend = JSON.stringify({ [evoStep]: evolution[evoStep] })
         break
 
       case 'info-form':
-        reqURL = '/users/personal-info/step-1'
-        const info = {}
+        reqURL = `/users/personal-info/${stepName}`
+        const persInfo = {}
         formData.forEach(function (value, key) {
-          info[key] = value
+          persInfo[key] = value
         })
-        dataToSend = JSON.stringify(info)
+        const {
+          firstName, lastName, givenName, surname,
+          dob,
+          nationality,
+          country, homeAddress, phoneNumber, postCode, city,
+          passportExpectedDate, passportExpiryDate, passportStatus, passportNumber
+        } = persInfo
+        const steps = {
+          'step-1': { firstName, lastName, givenName, surname },
+          'step-2': { dob },
+          'step-3': { nationality },
+          'step-4': { country, homeAddress, postCode, phoneNumber, city },
+          'step-5': { passportExpectedDate, passportExpiryDate, passportStatus, passportNumber }
+        }
+        dataToSend = JSON.stringify(steps[stepName])
         break
 
       default:
@@ -163,7 +204,7 @@ document.addEventListener('submit', e => {
       if (this.readyState === XMLHttpRequest.DONE) {
         if (this.status === 200) {
           addHobby.reset()
-          location.reload()
+          // location.reload()
           console.log(this.response)
         } else {
           alert(this.responseText)
@@ -173,3 +214,57 @@ document.addEventListener('submit', e => {
     request.send(dataToSend)
   }
 })
+
+let evoStep = 'hobbies'
+const evoPane = ['hobbies', 'courses', 'skills']
+let evoPos = 0
+function evolutionSteps () {
+  evoPos = (evoPos + 1) % evoPane.length
+  evoStep = evoPane[evoPos]
+  mui.tabs.activate(evoStep)
+}
+
+let stepName = 'step-1'
+const paneIds = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5']
+let currPos = 0
+function persInfoStep () {
+  currPos = (currPos + 1) % paneIds.length
+  stepName = paneIds[currPos]
+  mui.tabs.activate(stepName)
+}
+
+// const paneIds = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5']
+// const evoPane = ['hobbies', 'courses', 'skills']
+// let evoPos = 0
+// const currPos = 0
+
+document.getElementById('next-btn-evo').addEventListener('click', (e) => {
+  e.preventDefault()
+  evolutionSteps()
+  // evoPos = (evoPos + 1) % evoPane.length
+  // evoStep = evoPane[evoPos]
+  // console.log(evoStep)const evoPane = ['hobbies', 'courses', 'skills']
+})
+
+nextBtn.addEventListener('click', (e) => {
+  e.preventDefault()
+  persInfoStep()
+  // currPos = (currPos + 1) % paneIds.length
+  // stepName = paneIds[currPos]
+  // mui.tabs.activate(stepName)
+})
+
+const toggleEls = document.querySelectorAll('[data-mui-controls]')
+
+function tabsClick (ev) {
+  if (paneIds.indexOf(ev.paneId) >= 0) {
+    currPos = paneIds.indexOf(ev.paneId)
+  }
+  if (evoPane.indexOf(ev.paneId) >= 0) {
+    evoPos = evoPane.indexOf(ev.paneId)
+  }
+}
+
+for (var i = 0; i < toggleEls.length; i++) {
+  toggleEls[i].addEventListener('mui.tabs.showend', tabsClick)
+}

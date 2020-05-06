@@ -10,10 +10,10 @@ body
       tr(style="vertical-align:middle;")
         td( class="mui--appbar-height")
         td(class="mui--appbar-height" align="right")
-          a(href="/") Home
+          a(href="/" class="active-link") Home
           a(href="/text") Text
           a(href="/chat") Chat
-          a(href="/users") User list
+          a(href="/users/get-one") User
   section(class="container")
     h1 Test work node js
     ul
@@ -22,10 +22,12 @@ body
       p Создать функционал(запрос на сервере), который бы принимал текстовые данные любого размера. Возвращал в промисе  к-во символов, пробелов, запятых и точек, а также разбивал их по строкам.       
      li
       a(href="/users") Task 2 
-      p Создать функционал(запрос на сервере), который бы принимал картинку, обрабатывал ее, записывал на сервере для определенного пользователя, возвращал или перезаписывал текущую картинку. При этом у пользователя может быть много картинок. +добавить ffmpeg для изменений размера и разрешения в параметрах.        
+      p Создать функционал(запрос на сервере), который бы принимал картинку, обрабатывал ее, записывал на сервере для определенного пользователя, возвращал или перезаписывал текущую картинку. При этом у пользователя может быть много картинок. +добавить ffmpeg для изменений размера и разрешения в параметрах.(create User in chat first)
+                
      li
       a(href="/chat") Task 3 
       p Создать чат для нескольких пользователей с простой ui. Зарегистрированные пользователи могут зайти и что-то напечатать. Один будет админом, который сможет удалять пользователей.        
      li
       a(href="/users") Task 4   
-      p Создать запросы по апишке (само собой с базой) => https://docs.google.com/document/d/12H6wYfZXmkav4I8FN56NoMGDE_VIM8n0PeW_miNIflk/edit?usp=sharing      
+      p Создать запросы по апишке (само собой с базой) => https://docs.google.com/document/d/12H6wYfZXmkav4I8FN56NoMGDE_VIM8n0PeW_miNIflk/edit?usp=sharing (create User in chat first)  
+       

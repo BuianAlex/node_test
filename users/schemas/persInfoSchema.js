@@ -12,7 +12,7 @@ const scheme = mongoose.Schema({
   surname: {
     type: String
   },
-  job: {
+  dob: {
     type: String
   },
   nationality: {

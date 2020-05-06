@@ -5,12 +5,12 @@ router.get('/', (req, res, next) => {
   res.render('text')
 })
 
-router.post('/upload', async (req, res, next) => {
+router.post('/upload', (req, res, next) => {
   services.handler(req)
     .then(result => {
       res.send(result)
     })
-    .catch(next())
+    .catch(next)
 })
 
 module.exports = router
