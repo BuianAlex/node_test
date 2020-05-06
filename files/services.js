@@ -8,7 +8,7 @@ const fileQuery = require('./filesScheme')
 const unlink = util.promisify(fs.unlink)
 const uploadPath = './../views/public/uploads/'
 
-const uploadFile = async (req) => {
+function uploadFile (req) {
   const regexp = /filename="(.*)[.]/gi
   const filename = regexp.exec(req.headers['content-disposition'])[1]
   return new Promise((resolve, reject) => {
@@ -126,7 +126,9 @@ function deleteFile (fileID) {
             reject(new HttpError('FILE_NOT_FOUND', 400, error))
           })
       })
-      .catch(reject)
+      .catch(err => {
+        reject(new HttpError('FIELD_VALIDATION', 400, 'id not found', err))
+      })
   })
 }
 
