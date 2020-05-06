@@ -127,7 +127,9 @@ function deleteFile (fileID) {
             reject(new HttpError('FILE_NOT_FOUND', 400, error))
           })
       })
-      .catch(reject)
+      .catch(err => {
+        reject(new HttpError('FIELD_VALIDATION', 400, 'id not found', err))
+      })
   })
 }
 
