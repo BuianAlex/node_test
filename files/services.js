@@ -5,16 +5,8 @@ const FileType = require('file-type')
 const Jimp = require('jimp')
 const HttpError = require('../middleWare/errorMiddleware')
 const fileQuery = require('./filesScheme')
-<<<<<<< HEAD
-const uploadPath = path.join(__dirname, './../views/public/uploads/')
-
-if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath)
-}
-=======
 const unlink = util.promisify(fs.unlink)
 const uploadPath = './../views/public/uploads/'
->>>>>>> b5bc6a4548033a0a2035e8779a4e923401ff1914
 
 const uploadFile = async (req) => {
   const regexp = /filename="(.*)[.]/gi
