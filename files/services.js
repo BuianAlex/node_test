@@ -18,8 +18,13 @@ function uploadFile (req) {
             (read.fileType.ext === 'png' ||
             read.fileType.ext === 'jpg')
       ) {
+        console.log(path.join(__dirname,
+          uploadPath,
+        `${filename}.${read.fileType.ext}`
+        ))
+
         const write = fs.createWriteStream(
-          path.join(
+          path.join(__dirname,
             uploadPath,
           `${filename}.${read.fileType.ext}`
           )

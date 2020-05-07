@@ -1,4 +1,4 @@
-## The app created for   learnig Node.js 
+## The app created for learnig Node.js 
 
 ## Instalation
       npm install

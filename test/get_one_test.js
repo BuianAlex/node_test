@@ -1,7 +1,7 @@
 module.exports = (app, chai) => {
   describe('Test /users/get-one route', () => {
     describe('Get user personal info without authentication', () => {
-      it('without authentication', (done) => {
+      it('without authentication -> status 401', (done) => {
         chai
           .request(app)
           .get('/users/get-one')
@@ -12,7 +12,7 @@ module.exports = (app, chai) => {
             done()
           })
       })
-      it('without authentication by id', (done) => {
+      it('without authentication by id -> status 401', (done) => {
         chai
           .request(app)
           .get('/users/get-one?id=0')
@@ -42,7 +42,7 @@ module.exports = (app, chai) => {
             done()
           })
       })
-      it('get personal info current user', (done) => {
+      it('get personal info current user -> status 200', (done) => {
         authenticatedUser
           .get('/users/get-one')
           .end((err, res) => {
@@ -51,7 +51,7 @@ module.exports = (app, chai) => {
             done()
           })
       })
-      it('get personal info by user number', (done) => {
+      it('get personal info by user number -> status 200', (done) => {
         authenticatedUser
           .get(`/users/get-one?id=${userNumb}`)
           .end((err, res) => {

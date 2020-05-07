@@ -38,19 +38,19 @@ module.exports = (app, chai) => {
             done()
           })
       })
-      // it('delete photo with current user number, status -> 200', (done) => {
-      //   authenticatedUser
-      //     .post('/users/delete-photo')
-      //     .send({
-      //       imgID: user.photo[0]
-      //     })
-      //     .end((err, res) => {
-      //       if (err) console.error(err)
-      //       res.should.have.status(200)
-      //       res.body.result.should.be.equal(true)
-      //       done()
-      //     })
-      // })
+      it('delete photo with current user number, status -> 200', (done) => {
+        authenticatedUser
+          .post('/users/delete-photo')
+          .send({
+            imgID: user.photo[0]
+          })
+          .end((err, res) => {
+            if (err) console.error(err)
+            res.should.have.status(200)
+            res.body.result.should.be.equal(true)
+            done()
+          })
+      })
       it('delete photo id not exist, status -> 400', (done) => {
         authenticatedUser
           .post('/users/delete-photo')
@@ -64,34 +64,34 @@ module.exports = (app, chai) => {
             done()
           })
       })
-      // it('delete user photo by userNumber, status -> 200', (done) => {
-      //   authenticatedUser
-      //     .post('/users/delete-photo')
-      //     .send({
-      //       userNumb: user.userNumb,
-      //       imgID: user.photo[1]
-      //     })
-      //     .end((err, res) => {
-      //       if (err) console.error(err)
-      //       res.should.have.status(200)
-      //       res.body.result.should.be.equal(true)
-      //       done()
-      //     })
-      // })
-      // it('delete user photo userNumb not exist -> status 400', (done) => {
-      //   authenticatedUser
-      //     .post('/users/delete-photo')
-      //     .send({
-      //       userNumb: 100,
-      //       imgID: 'sdsdsdsds'
-      //     })
-      //     .end((err, res) => {
-      //       if (err) console.error(err)
-      //       res.should.have.status(400)
-      //       res.text.should.be.equal('FIELD_VALIDATION')
-      //       done()
-      //     })
-      // })
+      it('delete user photo by userNumber, status -> 200', (done) => {
+        authenticatedUser
+          .post('/users/delete-photo')
+          .send({
+            userNumb: user.userNumb,
+            imgID: user.photo[1]
+          })
+          .end((err, res) => {
+            if (err) console.error(err)
+            res.should.have.status(200)
+            res.body.result.should.be.equal(true)
+            done()
+          })
+      })
+      it('delete user photo userNumb not exist -> status 400', (done) => {
+        authenticatedUser
+          .post('/users/delete-photo')
+          .send({
+            userNumb: 100,
+            imgID: 'sdsdsdsds'
+          })
+          .end((err, res) => {
+            if (err) console.error(err)
+            res.should.have.status(400)
+            res.text.should.be.equal('FIELD_VALIDATION')
+            done()
+          })
+      })
       after(() => {
         del.sync([path.join(
           __dirname,
