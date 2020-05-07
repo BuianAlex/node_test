@@ -34,32 +34,51 @@ router.get('/', (req, res, next) => {
   service
     .getSome()
     .then((data) => {
-      res.render('usersList', { data: data })
+      let currentUser = false
+      if (req.user) {
+        currentUser = true
+      }
+      res.render('usersList', { data, currentUser })
     })
     .catch(next)
 })
 
 router.get('/get-one', checkPermissions.onlyAuthenticated, (req, res, next) => {
   let userID
-  if (req.query.id) {
-    if (/^[0-9]+$/g.test(req.query.id)) {
-      userID = req.query.id
+  let onlyRead = false
+  const currentUser = req.user.userNumb
+  if (req.query.id !== undefined) {
+    const reqUserNumber = parseInt(req.query.id, 10)
+    if (!isNaN(reqUserNumber)) {
+      userID = reqUserNumber
+      if (reqUserNumber !== currentUser) {
+        onlyRead = true
+      }
     } else {
       next(new HttpError('', 400))
     }
   } else {
-    userID = req.user.userNumb
+    userID = currentUser
   }
   service
     .getOne(userID)
     .then((data) => {
       if (data) {
-        res.render('userOne', { data })
+        if (onlyRead) {
+          res.render('userOneRead', { data })
+        } else {
+          res.render('userOne', { data })
+        }
       } else {
         next(new HttpError('', 400))
       }
     })
-    .catch(next)
+    .catch(err => {
+      console.log(err)
+
+      next()
+    }
+    )
 })
 
 router.post(

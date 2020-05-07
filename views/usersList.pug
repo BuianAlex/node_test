@@ -17,12 +17,14 @@ body
           a(href="/chat") Chat
           a(href="/users") Users list
   section(class="mui-container-fluid")
-    h1 Select a user for add photo or edit info         
-    ul(class="user-list")        
-      each user in data.usersList
-        li(class="mui-panel")
-          a( href="/users/get-one?id="+user.userNumb)=user.loginName 
-        
+    if (currentUser)
+      h1 Select a user for add photo or edit info         
+      ul(class="user-list")        
+        each user in data.usersList
+          li(class="mui-panel")
+            a( href="/users/get-one?id="+user.userNumb)=user.loginName 
+    else
+       h1 Log in to #[a(href="/chat") chat ] first    
         
         
         

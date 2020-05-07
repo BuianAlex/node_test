@@ -59,9 +59,7 @@ document.addEventListener('click', async e => {
         body.removeChild(modalWraper)
         location.reload()
       } else {
-        const msg = await response.json()
-
-        alert(JSON.stringify(msg))
+        alert(response.status + ' ' + response.statusText)
       }
     } catch (error) {
       console.log(error)
