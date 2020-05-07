@@ -1,8 +1,8 @@
 const path = require('path')
 const fs = require('fs')
 module.exports = (app, chai) => {
-  describe('Upload photo', () => {
-    it('Send valid file', done => {
+  describe('Test /files/upload route', () => {
+    it('Send valid file -> 200', done => {
       chai
         .request(app)
         .post('/files/upload')
@@ -12,7 +12,7 @@ module.exports = (app, chai) => {
         .send(fs.readFileSync(path.join(__dirname, './files/unnamed.jpg')))
         .end((err, res) => {
           if (err) console.log(err)
-
+          res.should.have.status(200)
           res.body.should.have.property('path').and.to.be.equal('/uploads/unnamed.jpg')
           done()
         })
